@@ -1,10 +1,314 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-  <meta charset="utf-8" />
-  <title>TBD</title>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Learning Part-Aware Dense 3D Feature Field for Generalizable Articulated Object Manipulation">
+  <meta name="keywords" content="Robotic Manipulation, 3D Feature Field, Part-Aware">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Learning Part-Aware Dense 3D Feature Field for Generalizable Articulated Object Manipulation</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/ca2.png">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
 </head>
+
 <body>
-  TBD
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+</nav>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">Learning Part-Aware Dense 3D Feature Field for Generalizable Articulated Object Manipulation</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">Anonymous Authors</span>
+            <br>
+            <!-- <span class="author-block">Paper under double-blind review</span> -->
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="./static/papers/paper.pdf"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+
+              <!-- GitHub Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/PA3FF/PA3FF"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                </a>
+              </span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Motivation Section -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Overview</h2>
+        <hr style="margin-top:0px">
+        <img src="./static/images/figure1.png" width="100%"/>
+        <p class="content has-text-justified">
+          We propose PA3FF, a feedforward model that predicts part-aware 3D feature fields for 3D shapes, enabling generalizable manipulation across unseen objects. Our part-aware diffusion policy leverages PA3FF to achieve efficient generalization with significant performance improvements. PA3FF exhibits consistency across shapes, enabling various downstream applications such as correspondence learning and segmentation.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Abstract Section -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <hr style="margin-top:0px">
+        <div class="content has-text-justified">
+          <p>
+            Articulated object manipulation is essential for various real-world robotic tasks, yet generalizing across diverse objects remains a major challenge. A key to generalization lies in understanding functional parts (e.g., door handles and knobs), which indicate where and how to manipulate across diverse object categories and shapes. Previous works attempted to achieve generalization by introducing foundation features, while these features are mostly 2D-based and do not specifically consider functional parts. When lifting these 2D features to geometry-profound 3D space, challenges arise, such as long runtimes, multi-view inconsistencies, and low spatial resolution with insufficient geometric information.
+          </p>
+          <p>
+            To address these issues, we propose Part-Aware 3D Feature Field (PA3FF), a novel dense 3D feature with part awareness for generalizable articulated object manipulation. PA3FF is trained by 3D part proposals from a large-scale labeled dataset, via a contrastive learning formulation. Given point clouds as input, PA3FF predicts a continuous 3D feature field in a feedforward manner, where the distance between point features reflects the proximity of functional parts: points with similar features are more likely to belong to the same part.
+          </p>
+          <p>
+            Building on this feature, we introduce the Part-Aware Diffusion Policy (PADP), an imitation learning framework aimed at enhancing sample efficiency and generalization for robotic manipulation. We evaluate PADP on several simulated and real-world tasks, demonstrating that PA3FF consistently outperforms a range of 2D and 3D representations in manipulation scenarios, including CLIP, DINOv2, and Grounded-SAM, achieving state-of-the-art performance.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Video Section -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Video</h2>
+        <hr style="margin-top:0px">
+        <div class="publication-video">
+          <iframe src="./static/videos/demo_video.mp4"
+                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Method Pipeline Section -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Method: Part-Aware 3D Feature Field</h2>
+        <hr style="margin-top:0px">
+        <img src="./static/images/pipeline.png" width="100%"/>
+        <p class="content has-text-justified">
+          Our framework consists of three stages: (1) <strong>Stage I:</strong> Leverage 3D geometric priors from large-scale 3D datasets through self-distillation using PointTransformer V3. (2) <strong>Stage II:</strong> Learn part-aware dense 3D feature fields via contrastive learning across objects to enhance part-level consistency and distinctiveness. (3) <strong>Stage III:</strong> Integrate the refined features into a diffusion policy for generalizable action generation in robotic manipulation tasks.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Feature Visualization Section -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Feature Visualization Comparison</h2>
+        <hr style="margin-top:0px">
+        <img src="./static/images/feature_comparison.png" width="100%"/>
+        <p class="content has-text-justified">
+          Comparison of feature field visualizations between PA3FF and other foundation features (DINOv2, SigLip, Sonata). Our PA3FF generates smoother, less noisy feature fields with better highlight of key functional parts compared to 2D methods, while providing more semantically meaningful and discriminative part-level representations compared to Sonata.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Tasks Illustration -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Real-World Task Evaluation</h2>
+        <hr style="margin-top:0px">
+        <img src="./static/images/task_illustration.png" width="100%"/>
+        <p class="content has-text-justified">
+          We evaluate our model on eight diverse real-world manipulation tasks: pulling lid of pot, opening drawer, closing box, closing laptop lid, opening microwave, opening bottle, putting lid on kettle, and pressing dispenser. These tasks cover a variety of manipulation scenarios and part-level interactions.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Results Section -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Experimental Results</h2>
+        
+        <!-- Real-World Results -->
+        <h2 class="title is-4">Real-World Task Results</h2>
+        <div class="content has-text-justified">
+          <p style="text-align: center;">
+            <img class="center-block org-banner" src="./static/images/real_world_results.png" width="100%"
+              style="display: inline-block;">
+          </p>
+          <p align="center">
+            Real-world task success rates across different methods. PADP significantly outperforms baselines with a mean success rate of 58.75% under unseen objects, compared to the highest baseline success rate of 35%.
+          </p>
+        </div>
+        
+
+        <!-- Simulation Results -->
+        <h2 class="title is-4">Simulation Results on PartInstruct</h2>
+        <div class="content has-text-justified">
+          <p style="text-align: center;">
+            <img class="center-block org-banner" src="./static/images/simulation_results.png" width="100%"
+              style="display: inline-block;">
+          </p>
+          <p align="center">
+            Simulated results across five test sets evaluating different types of generalization: Object States (OS), Object Instances (OI), Task Parts (TP), Task Categories (TC), and Object Categories (OC).
+          </p>
+        </div>
+
+        <!-- Generalization Analysis -->
+        <!-- <h2 class="title is-4">Generalization Analysis</h2>
+        <div class="content has-text-justified">
+          <p style="text-align: center;">
+            <img class="center-block org-banner" src="./static/images/generalization_test.png" width="100%"
+              style="display: inline-block;">
+          </p>
+          <p align="center">
+            Generalization evaluation across spatial, object, and environment variations. Our method maintains robust performance across all conditions while baselines show significant degradation.
+          </p>
+        </div> -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Downstream Applications -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Downstream Applications</h2>
+        <hr style="margin-top:0px">
+        <img src="./static/images/downstream_applications.png" width="100%"/>
+        <p class="content has-text-justified">
+          Beyond imitation learning, PA3FF enables diverse downstream applications including 3D shape correspondences and part segmentation. PA3FF exhibits superior consistency across shapes, enabling precise correspondences and accurate part segmentation compared to DINOv2 features.
+        </p>
+
+
+        <hr style="margin-top:2px">
+        <img src="./static/images/heatmap.png" width="100%"/>
+        <p class="content has-text-justified">
+          Since the features generated by PA3FF contain semantic information, calculating feature similarity
+using different task statements for the same object allows us to focus on different parts of the object.
+The figure shows the heatmap visualization of cosine similarity between different encoded instructions
+and features.
+        </p>
+      
+
+        <h2 class="title is-3">More Quantitative Results</h2>
+        <hr style="margin-top:0px">
+        <img src="./static/images/segmentation.png" width="100%"/>
+        <p class="content has-text-justified">
+          Segmentation Results on the PartNetE Dataset. Category mAP50s (%) are shown for different object categories. Higher values indicate better performance.
+        </p>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Limitation of Feature Lift Up</h2>
+        <hr style="margin-top:0px">
+        <img src="./static/images/defects.png" width="100%"/>
+        <p class="content has-text-justified">
+         Although 3D priors are known to enhance generalization, lifting features from 2D to 3D introduces
+significant challenges. Models that naively average multi-view features from frozen 2D networks
+suffer from inconsistent visibility across views. Rendered 2D images can also miss thin or small parts
+like handles or buttons.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <p>
+        This website template is borrowed from <a href="https://github.com/nerfies/nerfies.github.io">NeRFies</a>.
+      </p>
+    </div>
+  </div>
+</footer>
 </body>
 </html>

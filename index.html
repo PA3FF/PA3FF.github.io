@@ -39,8 +39,17 @@
 
     /* Hero Section */
     .hero {
-      background: var(--primary-gradient);
-      padding: 4rem 1.5rem 5rem;
+      /* 核心修改：用图片背景替换原渐变，可保留半透明渐变叠加增强文字可读性 */
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), 
+                  url("./static/images/face.png"); /* 替换为 face.png 的实际路径 */
+      /* 确保图片全屏适配：覆盖整个容器、不重复、居中显示 */
+      background-size: cover; /* 图片自适应容器大小（可能裁剪边缘） */
+      background-repeat: no-repeat; /* 禁止图片重复 */
+      background-position: center center; /* 图片居中对齐 */
+      background-attachment: fixed; /* 可选：滚动时背景固定（类似视差效果），不需要可删除 */
+      
+      /* 保留原有的内边距、定位等属性 */
+      padding: 9rem 1.5rem 9rem;
       position: relative;
       overflow: hidden;
     }
@@ -62,7 +71,7 @@
     }
 
     .publication-title {
-      color: white;
+      color: black;
       font-weight: 700;
       font-size: 2.5rem;
       line-height: 1.2;
@@ -71,7 +80,7 @@
     }
 
     .publication-authors {
-      color: rgba(255,255,255,0.95);
+      color: rgba(0,0,0,0.95);
       font-size: 1.1rem;
       margin-bottom: 2rem;
       background: rgba(255,255,255,0.1);

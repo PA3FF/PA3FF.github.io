@@ -7,404 +7,423 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>PA3FF: Part-Aware 3D Feature Field</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./static/css/bulma.min.css">
-  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
   <link rel="icon" href="./static/images/ca2.png">
 
   <style>
     :root {
-      --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-      --accent-color: #667eea;
-      --text-dark: #2d3748;
-      --text-light: #718096;
-      --bg-light: #f7fafc;
-      --border-radius: 16px;
-      --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
-      --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
-      --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+      /* Refined Palette */
+      --primary: #4338ca; /* Indigo 700 */
+      --primary-dark: #3730a3; /* Indigo 800 */
+      --secondary: #db2777; /* Pink 600 */
+      --accent: #7c3aed; /* Violet 600 */
+      
+      --bg-page: #f8fafc; /* Slate 50 */
+      --bg-surface: #ffffff;
+      --bg-surface-alt: #f1f5f9; /* Slate 100 */
+      
+      --text-main: #0f172a; /* Slate 900 */
+      --text-muted: #475569; /* Slate 600 */
+      --text-light: #94a3b8; /* Slate 400 */
+      
+      --gradient-brand: linear-gradient(135deg, #4338ca 0%, #7c3aed 100%);
+      
+      --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      
+      --radius-sm: 0.5rem;
+      --radius-md: 0.75rem;
+      --radius-lg: 1rem;
     }
 
-    * {
-      font-family: 'Inter', sans-serif;
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
     }
 
     body {
-      color: var(--text-dark);
-      line-height: 1.7;
-      background: #ffffff;
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* Hero Section */
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      color: var(--text-main);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    /* Navbar */
+    .navbar-float {
+      position: fixed;
+      top: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(12px);
+      padding: 0.5rem 0.75rem;
+      border-radius: 9999px;
+      box-shadow: var(--shadow-md);
+      z-index: 100;
+      display: flex;
+      gap: 0.5rem;
+      border: 1px solid rgba(226, 232, 240, 0.8);
+    }
+
+    .navbar-float a {
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      transition: all 0.2s ease;
+      font-family: 'Manrope', sans-serif;
+    }
+
+    .navbar-float a:hover {
+      color: var(--primary);
+      background-color: var(--bg-surface-alt);
+    }
+
+    /* Hero */
     .hero {
-      /* 核心修改：用图片背景替换原渐变，可保留半透明渐变叠加增强文字可读性 */
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), 
-                  url("./static/images/face.png"); /* 替换为 face.png 的实际路径 */
-      /* 确保图片全屏适配：覆盖整个容器、不重复、居中显示 */
-      background-size: cover; /* 图片自适应容器大小（可能裁剪边缘） */
-      background-repeat: no-repeat; /* 禁止图片重复 */
-      background-position: center center; /* 图片居中对齐 */
-      background-attachment: fixed; /* 可选：滚动时背景固定（类似视差效果），不需要可删除 */
-      
-      /* 保留原有的内边距、定位等属性 */
-      padding: 9rem 1.5rem 9rem;
       position: relative;
+      background: var(--bg-surface);
       overflow: hidden;
-    }
-
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: url('data:image/svg+xml,<svg width="60" height="60" xmlns="http://www.w3.org/2000/svg"><rect width="1" height="1" fill="rgba(255,255,255,0.1)"/></svg>');
-      opacity: 0.3;
-    }
-
-    .hero-body {
-      position: relative;
-      z-index: 1;
+      padding-top: 9rem !important;
+      padding-bottom: 6rem !important;
     }
 
     .publication-title {
-      color: black;
-      font-weight: 700;
-      font-size: 2.5rem;
-      line-height: 1.2;
+      font-family: 'Manrope', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      background: linear-gradient(to right, #0f172a, #4338ca);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
       margin-bottom: 1.5rem;
-      text-shadow: 0 2px 12px rgba(0,0,0,0.15);
+      line-height: 1.1;
     }
 
     .publication-authors {
-      color: rgba(0,0,0,0.95);
-      font-size: 1.1rem;
+      font-size: 1.125rem;
+      color: var(--text-muted);
       margin-bottom: 2rem;
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(10px);
-      padding: 1rem 2rem;
-      border-radius: 50px;
+    }
+
+    .author-block {
       display: inline-block;
+      margin-right: 0.5rem;
+    }
+    
+    .publication-links .button {
+      border: 1px solid #e2e8f0;
+      background: white;
+      color: var(--text-main);
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-sm);
     }
 
-    .publication-links {
-      margin-top: 2rem;
-    }
-
-    .link-block {
-      margin: 0 0.5rem;
-    }
-
-    .button.is-rounded {
-      border-radius: 50px;
-      padding: 0.75rem 2rem;
-      font-weight: 600;
-      transition: all 0.3s ease;
+    .publication-links .button:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-1px);
       box-shadow: var(--shadow-md);
     }
 
-    .button.is-rounded:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
+    /* Sections */
+    .section-title {
+      font-size: 2rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 2.5rem;
+      color: var(--text-main);
     }
 
-    /* Section Styles */
-    .section {
-      padding: 4rem 1.5rem;
+    .section-title::after {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 3px;
+      background: var(--gradient-brand);
+      margin: 0.75rem auto 0;
+      border-radius: 2px;
     }
 
-    .section:nth-child(even) {
-      background: var(--bg-light);
-    }
-
+    /* Cards */
     .content-box {
-      background: white;
-      border-radius: var(--border-radius);
-      padding: 2.5rem;
+      background: var(--bg-surface);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
       box-shadow: var(--shadow-sm);
+      border: 1px solid rgba(226, 232, 240, 0.8);
       margin-bottom: 2rem;
-      transition: all 0.3s ease;
     }
 
     .content-box:hover {
       box-shadow: var(--shadow-md);
     }
 
-    .title.is-3 {
-      color: var(--text-dark);
-      font-weight: 700;
-      margin-bottom: 1rem;
-      position: relative;
-      display: inline-block;
-    }
-
-    .title.is-3::after {
-      content: '';
-      position: absolute;
-      bottom: -8px;
-      left: 0;
-      width: 60px;
-      height: 4px;
-      background: var(--primary-gradient);
-      border-radius: 2px;
-    }
-
-    .title.is-4 {
-      color: var(--accent-color);
-      font-weight: 600;
-      margin-top: 2.5rem;
-      margin-bottom: 1.5rem;
-    }
-
-    hr {
-      border: none;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(102,126,234,0.3), transparent);
-      margin: 2rem 0;
-    }
-
-    /* Figure Styles */
-    figure {
-      margin: 2rem 0;
-    }
-
-    figure img {
-      border-radius: 12px;
-      box-shadow: var(--shadow-md);
-      transition: transform 0.3s ease;
-    }
-
-    figure img:hover {
-      transform: scale(1.02);
-    }
-
-    figcaption {
-      margin-top: 1rem;
-      color: var(--text-light);
-      font-size: 0.95rem;
-      line-height: 1.6;
-      text-align: left;
-      padding: 0 1rem;
-    }
-
-    figcaption strong {
-      color: var(--text-dark);
-      font-weight: 600;
-    }
-
-    /* Tabs */
-    .tabs {
+    /* Metrics */
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
       margin-bottom: 2rem;
     }
 
-    .tabs ul {
-      border-bottom: 2px solid #e2e8f0;
-    }
-
-    .tabs li.is-active a {
-      border-bottom-color: var(--accent-color);
-      color: var(--accent-color);
-    }
-
-    .tabs a {
-      border-bottom: 2px solid transparent;
-      color: var(--text-light);
-      font-weight: 500;
-      transition: all 0.3s ease;
-    }
-
-    .tabs a:hover {
-      border-bottom-color: var(--accent-color);
-      color: var(--accent-color);
-    }
-
-    .tab-content {
-      display: none;
-    }
-
-    .tab-content.is-active {
-      display: block;
-      animation: fadeIn 0.4s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Highlight Box */
-    .highlight-box {
-      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-      border-left: 4px solid #f59e0b;
-      border-radius: 8px;
-      padding: 1.5rem;
-      margin: 2rem 0;
-    }
-
-    .info-box {
-      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-      border-left: 4px solid #3b82f6;
-      border-radius: 8px;
-      padding: 1.5rem;
-      margin: 2rem 0;
-    }
-
-    .success-box {
-      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-      border-left: 4px solid #10b981;
-      border-radius: 8px;
-      padding: 1.5rem;
-      margin: 2rem 0;
-    }
-
-    /* Video Container */
-    .video-container {
-      position: relative;
-      width: 100%;
-      padding-bottom: 56.25%;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: var(--shadow-lg);
-    }
-
-    .video-container iframe,
-    .video-container video {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-    }
-
-    /* Video Card */
-    .video-card {
-      background: white;
-      border-radius: 12px;
-      padding: 1rem;
-      box-shadow: var(--shadow-sm);
-      transition: all 0.3s ease;
-    }
-
-    .video-card:hover {
-      box-shadow: var(--shadow-md);
-      transform: translateY(-4px);
-    }
-
-    .video-card .video-container {
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    /* Footer */
-    .footer {
-      background: var(--text-dark);
-      color: rgba(255,255,255,0.8);
-      padding: 3rem 1.5rem;
-    }
-
-    .footer a {
-      color: rgba(255,255,255,0.9);
-      transition: color 0.3s ease;
-    }
-
-    .footer a:hover {
-      color: white;
-    }
-
-    /* Results Grid */
-    .results-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 2rem;
-      margin: 2rem 0;
-    }
-
     .result-card {
-      background: white;
-      border-radius: 12px;
+      background: var(--bg-surface-alt);
       padding: 1.5rem;
-      box-shadow: var(--shadow-sm);
-      transition: all 0.3s ease;
-    }
-
-    .result-card:hover {
-      box-shadow: var(--shadow-md);
-      transform: translateY(-4px);
+      border-radius: var(--radius-md);
+      text-align: center;
+      border: 1px solid rgba(0,0,0,0.02);
     }
 
     .metric {
       font-size: 2.5rem;
       font-weight: 700;
-      background: var(--primary-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: var(--primary);
+      line-height: 1;
+      margin-bottom: 0.25rem;
     }
 
     .metric-label {
-      color: var(--text-light);
-      font-size: 0.9rem;
-      margin-top: 0.5rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 0.875rem;
+    }
+
+    /* Video Grid */
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .video-card {
+      background: white;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s ease;
+      border: 1px solid #f1f5f9;
+    }
+
+    .video-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .video-caption {
+      padding: 0.75rem;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-align: center;
+      color: var(--text-main);
+      background: var(--bg-surface-alt);
+      border-top: 1px solid #e2e8f0;
+    }
+    
+    /* Animation */
+    .fade-in-up {
+      animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Interactive Tabs */
+    .tabs.is-toggle li.is-active a {
+      background-color: var(--primary);
+      border-color: var(--primary);
+    }
+    
+    .tabs li a {
+      justify-content: center;
+      font-weight: 600;
+      font-family: 'Manrope', sans-serif;
     }
 
     /* Responsive */
-    @media screen and (max-width: 768px) {
+    @media (max-width: 768px) {
+      .hero {
+        padding-top: 6rem !important;
+        padding-bottom: 3rem !important;
+      }
       .publication-title {
-        font-size: 1.75rem;
+        font-size: 2rem;
       }
-      
-      .content-box {
-        padding: 1.5rem;
+      .navbar-float {
+        width: 90%;
+        font-size: 0.8rem;
+        overflow-x: auto;
+        justify-content: flex-start;
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
       }
+      .navbar-float::-webkit-scrollbar {
+        display: none;
+      }
+      .results-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Utility */
+    .has-text-justified-mobile {
+      text-align: justify;
+      hyphens: auto;
+    }
+
+    .result-card {
+      background: var(--bg-surface-alt);
+      padding: 1.5rem;
+      border-radius: var(--radius-md);
+      text-align: center;
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      transition: all 0.3s ease;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .result-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      background: white;
+      border-color: var(--primary);
+    }
+
+    .metric {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+
+    .metric-label {
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 0.875rem;
+    }
+    
+    /* Table Tweaks */
+    .tag-cell {
+      white-space: nowrap;
+      width: 1%;
     }
   </style>
 </head>
 
 <body>
 
-<!-- Hero Section -->
-<section class="hero">
-  <div class="hero-body">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered">
-        <div class="column has-text-centered">
-          <h1 class="title is-1 publication-title">
-            Learning Part-Aware Dense 3D Feature Field for Generalizable Articulated Object Manipulation
-          </h1>
-          <div class="publication-authors">
-            <span class="author-block">Anonymous Authors</span>
-            <br>
-            <span style="font-size: 0.9rem; opacity: 0.9;">Paper under review at ICLR 2026</span>
-          </div>
+  <!-- Floating Navigation -->
+  <nav class="navbar-float">
+    <a href="#overview">Overview</a>
+    <a href="#method">Method</a>
+    <a href="#results">Results</a>
+    <a href="#videos">Videos</a>
+    <a href="https://github.com/PA3FF/PA3FF" target="_blank"><i class="fab fa-github"></i> Code</a>
+    <a href="./static/papers/paper.pdf" target="_blank"><i class="fas fa-file-pdf"></i> Paper</a>
+  </nav>
 
-          <div class="publication-links">
-            <span class="link-block">
-              <a href="./static/papers/paper.pdf" class="external-link button is-normal is-rounded is-dark">
-                <span class="icon"><i class="fas fa-file-pdf"></i></span>
-                <span>Paper</span>
-              </a>
-            </span>
-            <span class="link-block">
-              <a href="https://github.com/PA3FF/PA3FF" class="external-link button is-normal is-rounded is-dark">
-                <span class="icon"><i class="fab fa-github"></i></span>
-                <span>Code</span>
-              </a>
-            </span>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-bg-accent"></div>
+    <div class="hero-bg-accent-2"></div>
+    
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered fade-in-up">
+            <h1 class="title is-1 publication-title">
+              Learning Part-Aware Dense 3D Feature Field for Generalizable Articulated Object Manipulation
+            </h1>
+            <div class="publication-authors">
+              <span class="author-block">Anonymous Authors</span>
+              <br>
+              <span style="font-size: 0.95rem; opacity: 0.8; margin-top: 0.5rem; display: block;">Paper under review at ICLR 2026</span>
+            </div>
+
+            <div class="publication-links">
+              <span class="link-block">
+                <a href="./static/papers/paper.pdf" class="external-link button is-normal is-rounded">
+                  <span class="icon"><i class="fas fa-file-pdf"></i></span>
+                  <span>Read Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://github.com/PA3FF/PA3FF" class="external-link button is-normal is-rounded">
+                  <span class="icon"><i class="fab fa-github"></i></span>
+                  <span>View Code</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="#videos" class="external-link button is-normal is-rounded">
+                  <span class="icon"><i class="fas fa-play"></i></span>
+                  <span>Watch Demo</span>
+                </a>
+              </span>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- Overview Section -->
-<section class="section">
-  <div class="container is-max-desktop">
-    <div class="columns is-centered">
-      <div class="column">
-        <h2 class="title is-3">Overview</h2>
+  <!-- Abstract Section -->
+  <section class="section" id="abstract">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column fade-in-up">
+          <h2 class="section-title">Abstract</h2>
+          
+          <div class="content-box">
+            <div class="content has-text-justified-mobile" style="font-size: 1.1rem; color: var(--text-main);">
+              <p>
+                Articulated object manipulation is essential for real-world robotic tasks, yet generalizing across diverse objects remains challenging. The key lies in understanding <strong>functional parts</strong> (e.g., handles, knobs) that indicate where and how to manipulate across diverse categories and shapes.
+              </p>
+              <p>
+                Previous approaches using 2D foundation features face critical limitations when lifted to 3D: long runtimes, multi-view inconsistencies, and low spatial resolution with insufficient geometric information.
+              </p>
+              <p>
+                We propose <strong>Part-Aware 3D Feature Field (PA3FF)</strong>, a novel dense 3D representation with part awareness for generalizable manipulation. PA3FF is trained via contrastive learning on 3D part proposals from large-scale datasets. Given point clouds as input, it predicts continuous 3D feature fields in a feedforward manner, where feature proximity reflects functional part relationships.
+              </p>
+              <p>
+                Building on PA3FF, we introduce <strong>Part-Aware Diffusion Policy (PADP)</strong> for enhanced sample efficiency and generalization. PADP significantly outperforms existing 2D and 3D representations (CLIP, DINOv2, Grounded-SAM), achieving state-of-the-art performance on both simulated and real-world tasks.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Overview Section -->
+  <section class="section" id="overview">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column fade-in-up" style="animation-delay: 0.2s;">
+          <h2 class="section-title">Overview</h2>
         <hr>
         
         <div class="content-box">
@@ -442,395 +461,486 @@
   </div>
 </section>
 
-<!-- Abstract Section -->
-<section class="section">
-  <div class="container is-max-desktop">
-    <div class="columns is-centered">
-      <div class="column">
-        <h2 class="title is-3">Abstract</h2>
-        <hr>
-        
-        <div class="content-box">
-          <div class="content has-text-justified">
-            <p>
-              Articulated object manipulation is essential for real-world robotic tasks, yet generalizing across diverse objects remains challenging. The key lies in understanding <strong>functional parts</strong> (e.g., handles, knobs) that indicate where and how to manipulate across diverse categories and shapes.
-            </p>
-            <p>
-              Previous approaches using 2D foundation features face critical limitations when lifted to 3D: long runtimes, multi-view inconsistencies, and low spatial resolution with insufficient geometric information.
-            </p>
-            <p>
-              We propose <strong>Part-Aware 3D Feature Field (PA3FF)</strong>, a novel dense 3D representation with part awareness for generalizable manipulation. PA3FF is trained via contrastive learning on 3D part proposals from large-scale datasets. Given point clouds as input, it predicts continuous 3D feature fields in a feedforward manner, where feature proximity reflects functional part relationships.
-            </p>
-            <p>
-              Building on PA3FF, we introduce <strong>Part-Aware Diffusion Policy (PADP)</strong> for enhanced sample efficiency and generalization. PADP significantly outperforms existing 2D and 3D representations (CLIP, DINOv2, Grounded-SAM), achieving state-of-the-art performance on both simulated and real-world tasks.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Video Section -->
-<section class="section">
-  <div class="container is-max-desktop">
-    <div class="columns is-centered">
-      <div class="column">
-        <h2 class="title is-3">Video</h2>
-        <hr>
-        
-        <div class="video-container">
-          <iframe src="./static/videos/demo_video.mp4" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Method Section -->
-<section class="section">
-  <div class="container is-max-desktop">
-    <div class="columns is-centered">
-      <div class="column">
-        <h2 class="title is-3">Method: Part-Aware 3D Feature Field</h2>
-        <hr>
-        
-        <div class="content-box">
-          <figure>
-            <img src="./static/images/pipeline.png" alt="Method Pipeline" style="width: 100%;">
-            <figcaption>
-              <strong>Three-Stage Training Framework:</strong> 
-              <strong>Stage I</strong> - Leverage 3D geometric priors from large-scale datasets through self-distillation using PointTransformer V3. 
-              <strong>Stage II</strong> - Learn part-aware dense 3D feature fields via contrastive learning to enhance part-level consistency and distinctiveness. 
-              <strong>Stage III</strong> - Integrate refined features into a diffusion policy for generalizable action generation in robotic manipulation tasks. See paper Section 3 for technical details.
-            </figcaption>
-          </figure>
-
-          <div class="info-box">
-            <p><strong>Technical Innovation:</strong> Unlike methods that lift 2D features to 3D via multi-view fusion (suffering from inconsistencies and limited resolution), PA3FF is 3D-native and predicts features in a single feedforward pass. This enables: (a) efficient inference, (b) consistent 3D feature fields, and (c) dense per-point features with accurate geometric cues.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Feature Comparison Section -->
-<section class="section">
-  <div class="container is-max-desktop">
-    <div class="columns is-centered">
-      <div class="column">
-        <h2 class="title is-3">Feature Visualization Comparison</h2>
-        <hr>
-        
-        <div class="content-box">
-          <figure>
-            <img src="./static/images/feature_comparison.png" alt="Feature Comparison" style="width: 100%;">
-            <figcaption>
-              <strong>Qualitative Comparison:</strong> PA3FF generates smoother, less noisy feature fields compared to 2D methods (DINOv2, SigLip), with better highlighting of key functional parts. Compared to Sonata (3D baseline), PA3FF provides more semantically meaningful and discriminative part-level representations. Note how 2D methods struggle with thin parts (e.g., refrigerator handles) and exhibit multi-view inconsistencies (e.g., faucet features).
-            </figcaption>
-          </figure>
-
-          <div class="highlight-box">
-            <p><strong>Why 2D Feature Lifting Fails:</strong> Multi-view feature lifting suffers from: (1) inconsistent visibility across views, (2) missing thin/small parts in 2D renders, (3) low spatial resolution from patch-based processing (14× smaller in DINOv2), and (4) computationally expensive fusion. See paper Appendix A.1 and Figure 7 for detailed analysis.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Tasks Section -->
-<section class="section">
-  <div class="container is-max-desktop">
-    <div class="columns is-centered">
-      <div class="column">
-        <h2 class="title is-3">Real-World Task Evaluation</h2>
-        <hr>
-        
-        <div class="content-box">
-          <figure>
-            <img src="./static/images/task_illustration.png" alt="Task Illustrations" style="width: 100%;">
-            <figcaption>
-              <strong>Eight Diverse Real-World Tasks:</strong> Evaluation covers pulling lid of pot, opening drawer, closing box, closing laptop lid, opening microwave, opening bottle, putting lid on kettle, and pressing dispenser. These tasks require precise part-level interactions across varied manipulation scenarios with different object categories and functional parts.
-            </figcaption>
-          </figure>
-
-          <h3 class="title is-4" style="margin-top: 3rem;">Task Execution Videos</h3>
+  <!-- Method Section -->
+  <section class="section" id="method">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column fade-in-up">
+          <h2 class="section-title">Methodology</h2>
           
-          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; margin-top: 2rem;">
-            
-            <!-- Video 1: Pulling lid of pot -->
-            <div class="video-card">
-              <div class="video-container">
-                <video controls style="width: 100%; height: 100%; object-fit: cover;">
-                  <source src="./static/videos/pot.mp4" type="video/mp4">
-                </video>
-              </div>
-              <p style="text-align: center; margin-top: 0.75rem; font-weight: 600; color: var(--text-dark);">Pulling lid of pot</p>
-            </div>
-
-            <!-- Video 2: Open drawer -->
-            <div class="video-card">
-              <div class="video-container">
-                <video controls style="width: 100%; height: 100%; object-fit: cover;">
-                  <source src="./static/videos/drawer.mp4" type="video/mp4">
-                </video>
-              </div>
-              <p style="text-align: center; margin-top: 0.75rem; font-weight: 600; color: var(--text-dark);">Open drawer</p>
-            </div>
-
-            <!-- Video 3: Close box -->
-            <div class="video-card">
-              <div class="video-container">
-                <video controls style="width: 100%; height: 100%; object-fit: cover;">
-                  <source src="./static/videos/box.mp4" type="video/mp4">
-                </video>
-              </div>
-              <p style="text-align: center; margin-top: 0.75rem; font-weight: 600; color: var(--text-dark);">Close box</p>
-            </div>
-
-            <!-- Video 4: Close lid of laptop -->
-            <div class="video-card">
-              <div class="video-container">
-                <video controls style="width: 100%; height: 100%; object-fit: cover;">
-                  <source src="./static/videos/laptop.mp4" type="video/mp4">
-                </video>
-              </div>
-              <p style="text-align: center; margin-top: 0.75rem; font-weight: 600; color: var(--text-dark);">Close lid of laptop</p>
-            </div>
-
-            <!-- Video 5: Open microwave -->
-            <div class="video-card">
-              <div class="video-container">
-                <video controls style="width: 100%; height: 100%; object-fit: cover;">
-                  <source src="./static/videos/microwave.mp4" type="video/mp4">
-                </video>
-              </div>
-              <p style="text-align: center; margin-top: 0.75rem; font-weight: 600; color: var(--text-dark);">Open microwave</p>
-            </div>
-
-            <!-- Video 6: Open bottle -->
-            <div class="video-card">
-              <div class="video-container">
-                <video controls style="width: 100%; height: 100%; object-fit: cover;">
-                  <source src="./static/videos/bottle.mp4" type="video/mp4">
-                </video>
-              </div>
-              <p style="text-align: center; margin-top: 0.75rem; font-weight: 600; color: var(--text-dark);">Open bottle</p>
-            </div>
-
-            <!-- Video 7: Put lid on kettle -->
-            <div class="video-card">
-              <div class="video-container">
-                <video controls style="width: 100%; height: 100%; object-fit: cover;">
-                  <source src="./static/videos/kettle.mp4" type="video/mp4">
-                </video>
-              </div>
-              <p style="text-align: center; margin-top: 0.75rem; font-weight: 600; color: var(--text-dark);">Put lid on kettle</p>
-            </div>
-
-            <!-- Video 8: Press dispenser -->
-            <div class="video-card">
-              <div class="video-container">
-                <video controls style="width: 100%; height: 100%; object-fit: cover;">
-                  <source src="./static/videos/dispenser.mp4" type="video/mp4">
-                </video>
-              </div>
-              <p style="text-align: center; margin-top: 0.75rem; font-weight: 600; color: var(--text-dark);">Press dispenser</p>
-            </div>
-
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Results Section -->
-<section class="section">
-  <div class="container is-max-desktop">
-    <div class="columns is-centered">
-      <div class="column">
-        <h2 class="title is-3">Experimental Results</h2>
-        <hr>
-
-        <div class="tabs is-centered is-boxed">
-          <ul>
-            <li class="is-active" data-tab="real-world"><a>Real-World Results</a></li>
-            <li data-tab="simulation"><a>Simulation Results</a></li>
-            <li data-tab="ablation"><a>Ablation Study</a></li>
-          </ul>
-        </div>
-
-        <!-- Real-World Tab -->
-        <div class="tab-content is-active" id="real-world">
           <div class="content-box">
-            <div class="results-grid">
-              <div class="result-card">
-                <div class="metric">58.75%</div>
-                <div class="metric-label">PADP Success Rate (Unseen)</div>
-              </div>
-              <div class="result-card">
-                <div class="metric">35%</div>
-                <div class="metric-label">Best Baseline (Unseen)</div>
-              </div>
-              <div class="result-card">
-                <div class="metric">+23.75%</div>
-                <div class="metric-label">Absolute Improvement</div>
-              </div>
-            </div>
-
-            <figure>
-              <img src="./static/images/real_world_results.png" alt="Real-World Results" style="width: 85%; margin: 0 auto; display: block;">
-              <figcaption>
-                <strong>Real-World Task Success Rates (Table 2 in paper):</strong> PADP significantly outperforms baselines across all eight tasks. Mean success rate on unseen test objects: PADP 58.75% vs. GenDP (best baseline) 35%, representing a 67.9% relative improvement. Each method evaluated with 10 trials per task under randomized initial conditions. Only 30 demonstrations per task were provided for training.
-              </figcaption>
-            </figure>
-          </div>
-        </div>
-
-        <!-- Simulation Tab -->
-        <div class="tab-content" id="simulation">
-          <div class="content-box">
-            <figure>
-              <img src="./static/images/simulation_results.png" alt="Simulation Results" style="width: 75%; margin: 0 auto; display: block;">
-              <figcaption>
-                <strong>PartInstruct Benchmark Results (Table 1 in paper):</strong> Performance across five generalization test sets - Object States (OS), Object Instances (OI), Task Parts (TP), Task Categories (TC), and Object Categories (OC). PADP achieves 28.79% average success rate, outperforming GenDP (19.36%) by 9.43 percentage points. Notably, PADP shows strong generalization to novel object categories (26.67% vs. 14.61%).
+            <figure class="image">
+              <img src="./static/images/pipeline.png" alt="Method Pipeline" style="width: 100%; border-radius: var(--radius-md);">
+              <figcaption class="mt-4">
+                <strong>Three-Stage Training Framework:</strong> 
+                (1) <strong>Geometric Pre-training:</strong> Leverage 3D geometric priors from large-scale datasets.
+                (2) <strong>Part-Aware Contrastive Learning:</strong> Learn dense 3D feature fields to enhance part-level consistency.
+                (3) <strong>Policy Learning:</strong> Integrate refined features into a diffusion policy for generalizable manipulation.
               </figcaption>
             </figure>
 
-            <div class="info-box" style="margin-top: 2rem;">
-              <p><strong>Five-Level Generalization Protocol:</strong></p>
-              <ul style="margin-bottom: 0;">
-                <li><strong>Test 1 (OS):</strong> Novel object positions and rotations - 36.76% success</li>
-                <li><strong>Test 2 (OI):</strong> Novel object instances within same category - 34.33% success</li>
-                <li><strong>Test 3 (TP):</strong> Novel part combinations in same task type - 32.45% success</li>
-                <li><strong>Test 4 (TC):</strong> Novel task categories - 13.75% success</li>
-                <li><strong>Test 5 (OC):</strong> Novel object categories - 26.67% success</li>
-              </ul>
+            <div class="columns is-multiline mt-5">
+              <div class="column is-4 fade-in-up" style="animation-delay: 0.1s;">
+                <div class="box has-background-light has-text-centered" style="height: 100%; display: flex; flex-direction: column; justify-content: flex-start; padding: 2rem;">
+                  <h4 class="title is-5 mb-3"><i class="fas fa-cube fa-lg mr-2" style="color: var(--primary);"></i>3D-Native</h4>
+                  <p style="font-size: 1.1rem; line-height: 1.6;">Directly processes point clouds, avoiding the inconsistencies of 2D multi-view lifting.</p>
+                </div>
+              </div>
+              <div class="column is-4 fade-in-up" style="animation-delay: 0.2s;">
+                <div class="box has-background-light has-text-centered" style="height: 100%; display: flex; flex-direction: column; justify-content: flex-start; padding: 2rem;">
+                  <h4 class="title is-5 mb-3"><i class="fas fa-layer-group fa-lg mr-2" style="color: var(--secondary);"></i>Dense Features</h4>
+                  <p style="font-size: 1.1rem; line-height: 1.6;">Predicts continuous per-point features that capture fine-grained geometric details.</p>
+                </div>
+              </div>
+              <div class="column is-4 fade-in-up" style="animation-delay: 0.3s;">
+                <div class="box has-background-light has-text-centered" style="height: 100%; display: flex; flex-direction: column; justify-content: flex-start; padding: 2rem;">
+                  <h4 class="title is-5 mb-3"><i class="fas fa-bolt fa-lg mr-2" style="color: var(--accent);"></i>Efficient</h4>
+                  <p style="font-size: 1.1rem; line-height: 1.6;">Single feedforward pass for fast inference, suitable for real-time robotic control.</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
 
-        <!-- Ablation Tab -->
-        <div class="tab-content" id="ablation">
+  <!-- Qualitative Comparison Section -->
+  <section class="section" style="background-color: var(--bg-surface-alt);">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column fade-in-up">
+          <h2 class="section-title">Why PA3FF?</h2>
+          
           <div class="content-box">
-            <h3 class="title is-4">Component Analysis</h3>
-            
-            <div class="results-grid">
-              <div class="result-card">
-                <div class="metric">62%</div>
-                <div class="metric-label">Full PADP Method</div>
-              </div>
-              <div class="result-card">
-                <div class="metric">46%</div>
-                <div class="metric-label">w/o Feature Refinement</div>
-              </div>
-              <div class="result-card">
-                <div class="metric">39%</div>
-                <div class="metric-label">Sonata + DP3</div>
-              </div>
-            </div>
+            <figure class="image">
+              <img src="./static/images/feature_comparison.png" alt="Feature Comparison" style="width: 100%;">
+              <figcaption class="mt-4">
+                <strong>Visual Comparison:</strong> PA3FF generates smooth, semantically consistent 3D feature fields. In contrast, 2D-lifting methods (like DINOv2) suffer from noise and inconsistency across views, while other 3D baselines (Sonata) lack discriminative detail for functional parts.
+              </figcaption>
+            </figure>
 
-            <div class="success-box" style="margin-top: 2rem;">
-              <p><strong>Key Findings (Table 5 in paper):</strong> Feature refinement via contrastive learning provides the largest performance gain (+16% from 46% to 62%), demonstrating that part-aware learning is critical for manipulation. Simply combining Sonata with DP3 yields only modest improvement (+2% over DP3 baseline), confirming that our algorithmic contributions are essential.</p>
+            <div class="columns mt-5">
+              <div class="column">
+                <div class="notification is-warning is-light">
+                  <h5 class="title is-5 mb-3">Limitations of 2D Lifting</h5>
+                  <ul style="font-size: 1.1rem; line-height: 1.8; list-style-type: disc; margin-left: 1.5rem;">
+                    <li style="margin-bottom: 0.5rem;"><strong>Inconsistency:</strong> Features fluctuate across different viewpoints.</li>
+                    <li style="margin-bottom: 0.5rem;"><strong>Resolution:</strong> Small/thin parts (handles) are often lost in 2D renderings.</li>
+                    <li><strong>Latency:</strong> Multi-view fusion is computationally expensive.</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="column">
+                <div class="notification is-success is-light">
+                  <h5 class="title is-5 mb-3">PA3FF Advantages</h5>
+                  <ul style="font-size: 1.1rem; line-height: 1.8; list-style-type: disc; margin-left: 1.5rem;">
+                    <li style="margin-bottom: 0.5rem;"><strong>Consistency:</strong> 3D-native prediction ensures viewpoint invariance.</li>
+                    <li style="margin-bottom: 0.5rem;"><strong>Precision:</strong> Dense per-point features capture fine geometric details.</li>
+                    <li><strong>Speed:</strong> Feedforward network enables real-time interaction.</li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- Downstream Applications Section -->
-<section class="section">
-  <div class="container is-max-desktop">
-    <div class="columns is-centered">
-      <div class="column">
-        <h2 class="title is-3">Downstream Applications</h2>
-        <hr>
-        
-        <div class="content-box">
-          <figure>
-            <img src="./static/images/downstream_applications.png" alt="Downstream Applications" style="width: 100%;">
-            <figcaption>
-              <strong>3D Shape Correspondences and Part Segmentation:</strong> PA3FF enables precise cross-shape correspondences using Functional Maps, even for shapes with significant topology/pose differences. The learned part hierarchy allows accurate segmentation via agglomerative clustering. PA3FF exhibits superior consistency compared to DINOv2 features.
-            </figcaption>
-          </figure>
+  <!-- Results Section -->
+  <section class="section" id="results">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column fade-in-up">
+          <h2 class="section-title">Experimental Results</h2>
+          
+          <div class="tabs is-toggle is-centered is-rounded">
+            <ul>
+              <li class="is-active" data-tab="real-world"><a><span class="icon"><i class="fas fa-robot"></i></span> <span>Real-World</span></a></li>
+              <li data-tab="simulation"><a><span class="icon"><i class="fas fa-desktop"></i></span> <span>Simulation</span></a></li>
+              <li data-tab="ablation"><a><span class="icon"><i class="fas fa-chart-bar"></i></span> <span>Ablation</span></a></li>
+            </ul>
+          </div>
 
-          <figure style="margin-top: 3rem;">
-            <img src="./static/images/heatmap.png" alt="Semantic Heatmaps" style="width: 100%;">
-            <figcaption>
-              <strong>Instruction-Conditioned Feature Attention:</strong> Since PA3FF features contain semantic information, computing similarity between different task instructions and point features allows focusing on task-relevant object parts. Heatmap visualization shows cosine similarity between encoded instructions and features, demonstrating the semantic richness of PA3FF representations.
-            </figcaption>
-          </figure>
+          <!-- Real-World Tab -->
+          <div class="tab-content is-active" id="real-world">
+            <div class="content-box">
+              <div class="columns is-multiline">
+                <!-- Top: Visual Results -->
+                <div class="column is-12">
+                  <div class="box p-2" style="border: 1px solid #f1f5f9; box-shadow: var(--shadow-sm);">
+                    <figure class="image">
+                      <img src="./static/images/real_world_results.png" alt="Real-World Results" style="width: 100%;">
+                    </figure>
+                  </div>
+                  <figcaption class="mt-3 has-text-centered" style="font-family: 'Inter', sans-serif; font-size: 0.9rem; color: var(--text-muted);">
+                    <strong>Table 2:</strong> Real-world manipulation success rates across 8 diverse tasks.
+                  </figcaption>
+                </div>
 
-          <h3 class="title is-4">Quantitative Segmentation Results</h3>
-          <figure>
-            <img src="./static/images/segmentation.png" alt="Segmentation Results" style="width: 85%; margin: 0 auto; display: block;">
-            <figcaption>
-              <strong>PartNetE Dataset Segmentation (Table 4 in paper):</strong> Category-wise mAP50 scores (%) across different object categories. PA3FF achieves 70.6% average mAP50, substantially outperforming PartSlip++ (62.6%) and PartSlip (63.4%). Particularly strong performance on bottles (94.6% vs. 78.5%), displays (86.5% vs. 74.1%), and storage furniture (49.6% vs. 36.7%).
-            </figcaption>
-          </figure>
+                <!-- Bottom: Metrics & Analysis -->
+                <div class="column is-12">
+                  <!-- Key Insight -->
+                  <div class="box mb-5" style="background: linear-gradient(to right, #eff6ff, #ffffff); border-left: 4px solid var(--primary); border-radius: 6px; padding: 1.5rem; box-shadow: var(--shadow-sm);">
+                    <div class="media">
+                      <div class="media-left">
+                        <span class="icon is-medium has-text-primary">
+                          <i class="fas fa-trophy fa-lg"></i>
+                        </span>
+                      </div>
+                      <div class="media-content">
+                        <h5 class="title is-6 mb-2" style="color: var(--primary-dark); font-family: 'Manrope', sans-serif;">State-of-the-Art Performance</h5>
+                        <p style="font-size: 1.05rem; line-height: 1.6; color: var(--text-main);">
+                          PADP achieves a <strong>58.8%</strong> success rate on unseen objects, outperforming the best baseline (GenDP) by <strong>+23.8%</strong>, effectively bridging the sim-to-real gap.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Metrics Grid -->
+                  <h5 class="title is-6 mb-3" style="font-family: 'Manrope', sans-serif; font-weight: 700;">Performance Metrics</h5>
+                  <div class="results-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
+                    <div class="result-card p-4">
+                      <div class="metric" style="font-size: 2.5rem;">58.8%</div>
+                      <div class="metric-label" style="font-size: 0.9rem;">Success (Unseen)</div>
+                    </div>
+                    <div class="result-card p-4">
+                      <div class="metric" style="color: var(--secondary); font-size: 2.5rem;">35.0%</div>
+                      <div class="metric-label" style="font-size: 0.9rem;">Baseline (GenDP)</div>
+                    </div>
+                    <div class="result-card p-4" style="background: var(--primary); color: white;">
+                      <div class="metric" style="color: white; font-size: 2.5rem;">+23.8%</div>
+                      <div class="metric-label" style="color: rgba(255,255,255,0.9); font-size: 0.9rem;">Absolute Improvement</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Simulation Tab -->
+          <div class="tab-content" id="simulation">
+            <div class="content-box">
+              <div class="columns is-multiline">
+                <!-- Top: Chart (Full Width) -->
+                <div class="column is-12">
+                  <figure class="image" style="border: 1px solid #f1f5f9; border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm);">
+                    <img src="./static/images/simulation_results.png" alt="Simulation Results" style="width: 100%; display: block;">
+                  </figure>
+                  <figcaption class="mt-3 has-text-centered" style="font-family: 'Inter', sans-serif; font-size: 0.9rem; color: var(--text-muted);">
+                    <strong>Figure 2:</strong> Success rates on PartInstruct benchmark across 5 generalization levels.
+                  </figcaption>
+                </div>
+                
+                <!-- Bottom: Analysis (Split Columns) -->
+                <div class="column is-6">
+                  <!-- Key Result Card -->
+                  <div class="box" style="background: linear-gradient(to right, #f8fafc, #ffffff); border-left: 4px solid var(--primary); border-radius: 6px; padding: 1.5rem; box-shadow: var(--shadow-sm); height: 100%;">
+                    <div class="media">
+                      <div class="media-left">
+                        <span class="icon is-medium has-text-primary">
+                          <i class="fas fa-lightbulb fa-lg"></i>
+                        </span>
+                      </div>
+                      <div class="media-content">
+                        <h5 class="title is-6 mb-2" style="color: var(--primary-dark); font-family: 'Manrope', sans-serif;">Key Insight</h5>
+                        <p style="font-size: 1.05rem; line-height: 1.6; color: var(--text-main);">
+                          PADP achieves <strong>28.8%</strong> average success rate, outperforming GenDP (19.4%) by a significant margin (+9.4%). It demonstrates superior robustness on <strong>Novel Object Categories (OC)</strong>, validating the generalization capability of our part-aware features.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="column is-6">
+                  <!-- Protocol List -->
+                  <div class="box" style="height: 100%; padding: 1.25rem; border: 1px solid #f1f5f9; box-shadow: var(--shadow-sm);">
+                    <h5 class="title is-6 mb-3" style="font-family: 'Manrope', sans-serif; font-weight: 700;">Generalization Protocol</h5>
+                    <div class="table-container">
+                      <table class="table is-fullwidth is-hoverable" style="background: transparent; font-family: 'Inter', sans-serif; margin-bottom: 0;">
+                        <tbody>
+                          <tr>
+                            <td class="tag-cell" style="border: none; padding: 0.35rem 0;"><span class="tag is-light has-text-weight-bold" style="color: var(--primary); background-color: #e0e7ff; width: 40px;">OS</span></td>
+                            <td style="border: none; padding: 0.35rem 0 0.35rem 0.75rem;"><strong>Object States</strong> <span class="has-text-grey-light is-size-7 ml-1">(Pose/Rotation)</span></td>
+                          </tr>
+                          <tr>
+                            <td class="tag-cell" style="border: none; padding: 0.35rem 0;"><span class="tag is-light has-text-weight-bold" style="color: var(--primary); background-color: #e0e7ff; width: 40px;">OI</span></td>
+                            <td style="border: none; padding: 0.35rem 0 0.35rem 0.75rem;"><strong>Object Instances</strong> <span class="has-text-grey-light is-size-7 ml-1">(Same Category)</span></td>
+                          </tr>
+                          <tr>
+                            <td class="tag-cell" style="border: none; padding: 0.35rem 0;"><span class="tag is-light has-text-weight-bold" style="color: var(--primary); background-color: #e0e7ff; width: 40px;">TP</span></td>
+                            <td style="border: none; padding: 0.35rem 0 0.35rem 0.75rem;"><strong>Task Parts</strong> <span class="has-text-grey-light is-size-7 ml-1">(New Parts)</span></td>
+                          </tr>
+                          <tr>
+                            <td class="tag-cell" style="border: none; padding: 0.35rem 0;"><span class="tag is-light has-text-weight-bold" style="color: var(--secondary); background-color: #fce7f3; width: 40px;">TC</span></td>
+                            <td style="border: none; padding: 0.35rem 0 0.35rem 0.75rem;"><strong>Task Categories</strong> <span class="has-text-grey-light is-size-7 ml-1">(New Tasks)</span></td>
+                          </tr>
+                          <tr>
+                            <td class="tag-cell" style="border: none; padding: 0.35rem 0;"><span class="tag is-light has-text-weight-bold" style="color: var(--accent); background-color: #ede9fe; width: 40px;">OC</span></td>
+                            <td style="border: none; padding: 0.35rem 0 0.35rem 0.75rem;"><strong>Object Categories</strong> <span class="has-text-grey-light is-size-7 ml-1">(Unseen Class)</span></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ablation Tab -->
+          <div class="tab-content" id="ablation">
+            <div class="content-box">
+              <h3 class="title is-4 has-text-centered mb-5">Component Analysis</h3>
+              
+              <div class="results-grid">
+                <div class="result-card">
+                  <div class="metric">62%</div>
+                  <div class="metric-label">Full PADP Method</div>
+                </div>
+                <div class="result-card" style="opacity: 0.7;">
+                  <div class="metric">46%</div>
+                  <div class="metric-label">w/o Feature Refinement</div>
+                </div>
+                <div class="result-card" style="opacity: 0.7;">
+                  <div class="metric">39%</div>
+                  <div class="metric-label">Sonata + DP3</div>
+                </div>
+              </div>
+
+              <div class="box mt-5" style="background: linear-gradient(to right, #f0fdf4, #ffffff); border-left: 4px solid #10b981; border-radius: 6px; padding: 1.5rem; box-shadow: var(--shadow-sm);">
+                <div class="media">
+                  <div class="media-left">
+                    <span class="icon is-medium has-text-success">
+                      <i class="fas fa-check-circle fa-lg"></i>
+                    </span>
+                  </div>
+                  <div class="media-content">
+                    <h5 class="title is-6 mb-2" style="color: #065f46; font-family: 'Manrope', sans-serif;">Key Insight</h5>
+                    <p style="font-size: 1.05rem; line-height: 1.6; color: var(--text-main);">
+                      Feature refinement via contrastive learning provides the largest performance gain (<strong>+16%</strong>), confirming that our part-aware representation learning is the critical component for success.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- Limitations Section -->
-<section class="section">
-  <div class="container is-max-desktop">
-    <div class="columns is-centered">
-      <div class="column">
-        <h2 class="title is-3">Limitations of 2D Feature Lifting</h2>
-        <hr>
-        
-        <div class="content-box">
-          <figure>
-            <img src="./static/images/defects.png" alt="Feature Lifting Limitations" style="width: 100%;">
-            <figcaption>
-              <strong>Challenges in 2D-to-3D Feature Lifting:</strong> Although 3D priors enhance generalization, naively lifting 2D features introduces significant problems: (1) <strong>Multi-view inconsistency</strong> - features from frozen 2D networks have inconsistent visibility across views, (2) <strong>Missing thin parts</strong> - rendered 2D images fail to capture thin/small functional parts like handles or buttons due to limited resolution, (3) <strong>Computational cost</strong> - multi-view fusion is expensive and slow. PA3FF addresses these by being 3D-native from the start.
-            </figcaption>
-          </figure>
+  <!-- Video Section -->
+  <section class="section" id="videos">
+    <div class="container is-max-desktop">
+      <h2 class="section-title fade-in-up">Real-World Demonstrations</h2>
+      
+      <div class="content-box fade-in-up">
+        <figure class="image mb-5">
+           <img src="./static/images/task_illustration.png" alt="Task Illustrations" style="width: 100%;">
+        </figure>
+
+        <div class="video-grid">
+          <!-- Video 1 -->
+          <div class="video-card">
+            <div class="video-container">
+              <video controls preload="none" poster="./static/images/pot_poster.jpg">
+                <source src="./static/videos/pot.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="video-caption">Pulling Lid of Pot</div>
+          </div>
+
+          <!-- Video 2 -->
+          <div class="video-card">
+            <div class="video-container">
+              <video controls preload="none">
+                <source src="./static/videos/drawer.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="video-caption">Opening Drawer</div>
+          </div>
+
+          <!-- Video 3 -->
+          <div class="video-card">
+            <div class="video-container">
+              <video controls preload="none">
+                <source src="./static/videos/box.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="video-caption">Closing Box</div>
+          </div>
+
+          <!-- Video 4 -->
+          <div class="video-card">
+            <div class="video-container">
+              <video controls preload="none">
+                <source src="./static/videos/laptop.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="video-caption">Closing Laptop</div>
+          </div>
+
+          <!-- Video 5 -->
+          <div class="video-card">
+            <div class="video-container">
+              <video controls preload="none">
+                <source src="./static/videos/microwave.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="video-caption">Opening Microwave</div>
+          </div>
+
+          <!-- Video 6 -->
+          <div class="video-card">
+            <div class="video-container">
+              <video controls preload="none">
+                <source src="./static/videos/bottle.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="video-caption">Opening Bottle</div>
+          </div>
+
+           <!-- Video 7 -->
+          <div class="video-card">
+            <div class="video-container">
+              <video controls preload="none">
+                <source src="./static/videos/kettle.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="video-caption">Lid on Kettle</div>
+          </div>
+
+           <!-- Video 8 -->
+          <div class="video-card">
+            <div class="video-container">
+              <video controls preload="none">
+                <source src="./static/videos/dispenser.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="video-caption">Pressing Dispenser</div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- Footer -->
-<footer class="footer">
-  <div class="container">
-    <div class="content has-text-centered">
-      <p>
-        This website template is borrowed from <a href="https://github.com/nerfies/nerfies.github.io">NeRFies</a>.
-      </p>
-      <p style="margin-top: 1rem; opacity: 0.7; font-size: 0.9rem;">
-        © 2026 Anonymous Authors. Paper under review at ICLR 2026.
-      </p>
+  <!-- Downstream Applications Section -->
+  <section class="section" id="downstream">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column fade-in-up">
+          <h2 class="section-title">Downstream Applications</h2>
+          
+          <div class="content-box">
+            <div class="columns is-multiline">
+              <div class="column is-12">
+                <figure class="image">
+                  <img src="./static/images/downstream_applications.png" alt="Downstream Applications">
+                  <figcaption class="mt-2">
+                    <strong>3D Shape Correspondences:</strong> PA3FF enables precise cross-shape correspondences using Functional Maps, robust to topology changes.
+                  </figcaption>
+                </figure>
+              </div>
+              
+              <div class="column is-6">
+                <figure class="image">
+                  <img src="./static/images/heatmap.png" alt="Semantic Heatmaps">
+                  <figcaption class="mt-2">
+                    <strong>Instruction Attention:</strong> Heatmaps show cosine similarity between text instructions and learned 3D features.
+                  </figcaption>
+                </figure>
+              </div>
+
+              <div class="column is-6">
+                <figure class="image">
+                  <img src="./static/images/segmentation.png" alt="Segmentation Results">
+                  <figcaption class="mt-2">
+                    <strong>Part Segmentation:</strong> Superior zero-shot segmentation performance (mAP50 70.6%) compared to PartSlip++.
+                  </figcaption>
+                </figure>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-</footer>
+  </section>
 
-<script>
-  // Tab switching functionality
-  document.querySelectorAll('.tabs li').forEach(tab => {
-    tab.addEventListener('click', function() {
-      const targetTab = this.getAttribute('data-tab');
-      
-      document.querySelectorAll('.tabs li').forEach(t => t.classList.remove('is-active'));
-      this.classList.add('is-active');
-      
-      document.querySelectorAll('.tab-content').forEach(content => {
-        content.classList.remove('is-active');
+  <!-- Footer -->
+  <footer class="footer" style="background: var(--text-main); color: white; padding: 4rem 1.5rem;">
+    <div class="container">
+      <div class="columns">
+        <div class="column is-8">
+          <h4 class="title is-5 has-text-white">PA3FF</h4>
+          <p class="is-size-6" style="opacity: 0.7;">
+            Learning Part-Aware Dense 3D Feature Field for Generalizable Articulated Object Manipulation.
+          </p>
+        </div>
+        <div class="column is-4 has-text-right-tablet">
+          <p class="is-size-7" style="opacity: 0.5;">
+            &copy; 2026 Anonymous Authors.<br>
+            Template adapted from <a href="https://github.com/nerfies/nerfies.github.io" style="color: white; text-decoration: underline;">NeRFies</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Tab switching functionality
+      const tabs = document.querySelectorAll('.tabs li');
+      const tabContents = document.querySelectorAll('.tab-content');
+
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          // Remove active class from all tabs
+          tabs.forEach(t => t.classList.remove('is-active'));
+          // Add active class to clicked tab
+          tab.classList.add('is-active');
+
+          // Hide all tab contents
+          tabContents.forEach(content => {
+            content.style.display = 'none';
+            content.classList.remove('is-active');
+          });
+
+          // Show target tab content
+          const targetId = tab.getAttribute('data-tab');
+          const targetContent = document.getElementById(targetId);
+          if (targetContent) {
+            targetContent.style.display = 'block';
+            // Small delay to allow display:block to apply before adding opacity class for transition
+            setTimeout(() => {
+              targetContent.classList.add('is-active');
+            }, 10);
+          }
+        });
       });
-      
-      document.getElementById(targetTab).classList.add('is-active');
-    });
-  });
-</script>
 
+      // Intersection Observer for Scroll Animations
+      const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1
+      };
+
+      const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.animationPlayState = 'running';
+            observer.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+
+      document.querySelectorAll('.fade-in-up').forEach(el => {
+        el.style.animationPlayState = 'paused';
+        observer.observe(el);
+      });
+    });
+  </script>
 </body>
 </html>

@@ -7,7 +7,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>PA3FF: Part-Aware 3D Feature Field</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..900,0..100&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./static/css/bulma.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
@@ -15,29 +17,40 @@
 
   <style>
     :root {
-      /* Refined Palette */
-      --primary: #4338ca; /* Indigo 700 */
-      --primary-dark: #3730a3; /* Indigo 800 */
-      --secondary: #db2777; /* Pink 600 */
-      --accent: #7c3aed; /* Violet 600 */
-      
-      --bg-page: #f8fafc; /* Slate 50 */
+      /* Editorial-technical palette */
+      --ink: #0f1115;
+      --ink-soft: #1d2025;
+      --paper: #faf8f3;
+      --paper-tint: #f3efe6;
+      --rule: #2a2d33;
+      --rule-soft: #e3dccd;
+
+      --primary: #c2410c;        /* terracotta */
+      --primary-dark: #9a330a;
+      --secondary: #0f766e;      /* deep teal */
+      --accent: #b45309;         /* amber */
+
+      --bg-page: var(--paper);
       --bg-surface: #ffffff;
-      --bg-surface-alt: #f1f5f9; /* Slate 100 */
-      
-      --text-main: #0f172a; /* Slate 900 */
-      --text-muted: #475569; /* Slate 600 */
-      --text-light: #94a3b8; /* Slate 400 */
-      
-      --gradient-brand: linear-gradient(135deg, #4338ca 0%, #7c3aed 100%);
-      
-      --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-      
-      --radius-sm: 0.5rem;
-      --radius-md: 0.75rem;
-      --radius-lg: 1rem;
+      --bg-surface-alt: var(--paper-tint);
+
+      --text-main: var(--ink);
+      --text-muted: #4a4d55;
+      --text-light: #7c7f87;
+
+      --gradient-brand: linear-gradient(135deg, #c2410c 0%, #b45309 100%);
+
+      --shadow-sm: 0 1px 2px 0 rgba(15, 17, 21, 0.06);
+      --shadow-md: 0 2px 6px -2px rgba(15, 17, 21, 0.08), 0 8px 24px -12px rgba(15, 17, 21, 0.08);
+      --shadow-lg: 0 12px 32px -8px rgba(15, 17, 21, 0.12), 0 24px 48px -16px rgba(15, 17, 21, 0.10);
+
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-lg: 10px;
+
+      --font-display: 'Fraunces', ui-serif, Georgia, 'Times New Roman', serif;
+      --font-body: 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
     }
 
     html {
@@ -46,291 +59,786 @@
     }
 
     body {
-      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      font-family: var(--font-body);
       background-color: var(--bg-page);
+      background-image:
+        radial-gradient(rgba(15,17,21,0.045) 1px, transparent 1px);
+      background-size: 22px 22px;
+      background-position: 0 0;
       color: var(--text-main);
-      line-height: 1.6;
+      line-height: 1.65;
       -webkit-font-smoothing: antialiased;
+      font-feature-settings: "ss01", "cv11";
+    }
+
+    /* paper grain */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.35;
+      mix-blend-mode: multiply;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.05  0 0 0 0 0.05  0 0 0 0 0.05  0 0 0 0.35 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
     }
 
     h1, h2, h3, h4, h5, h6 {
-      font-family: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      font-family: var(--font-display);
       color: var(--text-main);
-      letter-spacing: -0.02em;
-      line-height: 1.2;
+      letter-spacing: -0.015em;
+      line-height: 1.12;
+      font-weight: 500;
     }
+
+    a { color: var(--primary); }
+    a:hover { color: var(--primary-dark); }
+
+    ::selection { background: var(--ink); color: var(--paper); }
 
     /* Navbar */
     .navbar-float {
       position: fixed;
-      top: 1.5rem;
+      top: 1.25rem;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(12px);
-      padding: 0.5rem 0.75rem;
+      background: rgba(250, 248, 243, 0.82);
+      backdrop-filter: saturate(160%) blur(14px);
+      -webkit-backdrop-filter: saturate(160%) blur(14px);
+      padding: 0.35rem 0.4rem;
       border-radius: 9999px;
-      box-shadow: var(--shadow-md);
+      box-shadow: 0 1px 0 rgba(15,17,21,0.04), var(--shadow-md);
       z-index: 100;
       display: flex;
-      gap: 0.5rem;
-      border: 1px solid rgba(226, 232, 240, 0.8);
+      gap: 0.15rem;
+      border: 1px solid rgba(15,17,21,0.08);
     }
 
     .navbar-float a {
       color: var(--text-muted);
-      font-weight: 600;
-      font-size: 0.9rem;
-      padding: 0.5rem 1rem;
+      font-weight: 500;
+      font-size: 0.82rem;
+      letter-spacing: 0.02em;
+      padding: 0.5rem 0.95rem;
       border-radius: 9999px;
       transition: all 0.2s ease;
-      font-family: 'Manrope', sans-serif;
+      font-family: var(--font-mono);
+      text-transform: lowercase;
     }
 
     .navbar-float a:hover {
-      color: var(--primary);
-      background-color: var(--bg-surface-alt);
+      color: var(--ink);
+      background-color: rgba(15,17,21,0.06);
     }
+
+    .navbar-float a i { font-size: 0.78rem; margin-right: 0.25rem; }
 
     /* Hero */
     .hero {
       position: relative;
-      background: var(--bg-surface);
+      background: var(--paper);
       overflow: hidden;
-      padding-top: 9rem !important;
-      padding-bottom: 6rem !important;
+      padding-top: 8rem !important;
+      padding-bottom: 5rem !important;
+      border-bottom: 1px solid var(--rule-soft);
     }
 
+    /* decorative face.png band — lives on the right, faded into paper */
+    .hero-face {
+      position: absolute;
+      top: 0; right: 0; bottom: 0;
+      width: 52%;
+      background: url('./static/images/face.png') left center / cover no-repeat;
+      filter: grayscale(0.15) contrast(0.95);
+      opacity: 0.55;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .hero-face::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, var(--paper) 0%, rgba(250,248,243,0.88) 18%, rgba(250,248,243,0.2) 55%, rgba(250,248,243,0) 100%),
+        linear-gradient(180deg, rgba(250,248,243,0.5) 0%, rgba(250,248,243,0) 18%, rgba(250,248,243,0) 82%, rgba(250,248,243,0.5) 100%);
+    }
+
+    /* top-left tiny meta badge */
+    .hero-meta {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 1.75rem;
+    }
+    .hero-meta .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--primary);
+      box-shadow: 0 0 0 4px rgba(194, 65, 12, 0.12);
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 4px rgba(194, 65, 12, 0.12); }
+      50% { box-shadow: 0 0 0 8px rgba(194, 65, 12, 0); }
+    }
+    .hero-meta .rule {
+      flex: 0 0 40px; height: 1px; background: var(--rule-soft);
+    }
+
+    .hero-body { position: relative; z-index: 2; }
+
     .publication-title {
-      font-family: 'Manrope', sans-serif;
-      font-size: 3.5rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      background: linear-gradient(to right, #0f172a, #4338ca);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 1.5rem;
-      line-height: 1.1;
+      font-family: var(--font-display);
+      font-optical-sizing: auto;
+      font-variation-settings: "opsz" 120, "SOFT" 40;
+      font-size: clamp(2.4rem, 5.4vw, 4.4rem);
+      font-weight: 380;
+      letter-spacing: -0.025em;
+      color: var(--ink);
+      margin-bottom: 1.75rem;
+      line-height: 1.02;
+      max-width: 18ch;
+    }
+    .publication-title em {
+      font-style: italic;
+      font-weight: 360;
+      color: var(--primary);
+      font-variation-settings: "opsz" 120, "SOFT" 80;
     }
 
     .publication-authors {
-      font-size: 1.125rem;
-      color: var(--text-muted);
-      margin-bottom: 2rem;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      color: var(--text-main);
+      margin-bottom: 1.5rem;
+      max-width: 44rem;
+      line-height: 1.75;
     }
 
     .author-block {
-      display: inline-block;
-      margin-right: 0.5rem;
+      display: inline;
+      margin-right: 0.1rem;
     }
-    
-    .publication-links .button {
-      border: 1px solid #e2e8f0;
-      background: white;
-      color: var(--text-main);
-      font-size: 0.9rem;
-      transition: all 0.2s ease;
-      box-shadow: var(--shadow-sm);
+    .author-block strong { font-weight: 600; }
+    .publication-authors sup { color: var(--primary); font-weight: 600; }
+
+    .author-affil {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-top: 0.85rem;
+      line-height: 1.8;
+    }
+    .author-affil sup { color: var(--primary); }
+
+    .author-note {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      color: var(--text-light);
+      text-transform: uppercase;
+      margin-top: 0.6rem;
     }
 
+    .venue-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      padding: 0.45rem 0.9rem;
+      background: var(--ink);
+      color: var(--paper);
+      border-radius: 999px;
+      margin-top: 1.5rem;
+    }
+    .venue-badge .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #22c55e;
+    }
+
+    .publication-links {
+      margin-top: 2.25rem;
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+    .publication-links .button {
+      border: 1px solid var(--ink);
+      background: var(--ink);
+      color: var(--paper);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      font-weight: 500;
+      padding: 0 1.25rem;
+      height: 2.6rem;
+      border-radius: 0;
+      transition: transform 0.25s cubic-bezier(0.2,0.8,0.2,1), background 0.25s, color 0.25s;
+      box-shadow: none;
+      text-transform: uppercase;
+    }
+    .publication-links .button.is-ghost {
+      background: transparent;
+      color: var(--ink);
+    }
     .publication-links .button:hover {
+      background: var(--primary);
+      color: var(--paper);
       border-color: var(--primary);
-      color: var(--primary);
-      transform: translateY(-1px);
-      box-shadow: var(--shadow-md);
+      transform: translate(-2px, -2px);
+      box-shadow: 4px 4px 0 var(--ink);
+    }
+    .publication-links .button.is-ghost:hover {
+      background: var(--ink);
+      color: var(--paper);
+      border-color: var(--ink);
     }
 
     /* Sections */
-    .section-title {
-      font-size: 2rem;
-      font-weight: 700;
-      text-align: center;
-      margin-bottom: 2.5rem;
-      color: var(--text-main);
+    .section {
+      position: relative;
+      padding: 6rem 1.5rem;
     }
 
-    .section-title::after {
-      content: '';
-      display: block;
-      width: 40px;
-      height: 3px;
-      background: var(--gradient-brand);
-      margin: 0.75rem auto 0;
-      border-radius: 2px;
+    .section-index {
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 1.2rem;
+    }
+    .section-index .num {
+      color: var(--primary);
+      font-weight: 600;
+    }
+    .section-index .rule {
+      flex: 1;
+      height: 1px;
+      background: var(--rule-soft);
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-variation-settings: "opsz" 96, "SOFT" 50;
+      font-size: clamp(2rem, 3.6vw, 3rem);
+      font-weight: 380;
+      letter-spacing: -0.02em;
+      text-align: left;
+      margin-bottom: 2.75rem;
+      color: var(--ink);
+      line-height: 1.05;
+      max-width: 28ch;
+    }
+    .section-title::after { content: none; }
+    .section-title em {
+      font-style: italic;
+      color: var(--primary);
+      font-weight: 360;
     }
 
     /* Cards */
     .content-box {
       background: var(--bg-surface);
-      border-radius: var(--radius-lg);
-      padding: 2rem;
+      border-radius: 0;
+      padding: 0;
+      box-shadow: none;
+      border: none;
+      margin-bottom: 0;
+    }
+    .content-box:hover { box-shadow: none; }
+
+    /* Figure treatment — editorial / break-out */
+    .figure-plate {
+      position: relative;
+      background: #fff;
+      border: 1px solid var(--rule-soft);
+      padding: 1.25rem;
+      margin: 0 0 1.5rem;
       box-shadow: var(--shadow-sm);
-      border: 1px solid rgba(226, 232, 240, 0.8);
-      margin-bottom: 2rem;
+      overflow: hidden;
+      transition: box-shadow 0.4s ease, transform 0.4s ease;
+    }
+    .figure-plate::before {
+      content: attr(data-label);
+      position: absolute;
+      top: 0.6rem; left: 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      z-index: 2;
+    }
+    .figure-plate img {
+      display: block;
+      width: 100%;
+      height: auto;
+      transition: transform 0.6s cubic-bezier(0.2,0.8,0.2,1);
+    }
+    .figure-plate:hover {
+      box-shadow: var(--shadow-lg);
+    }
+    .figure-plate:hover img {
+      transform: scale(1.015);
     }
 
-    .content-box:hover {
-      box-shadow: var(--shadow-md);
+    .figure-caption {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 1.25rem;
+      padding: 1rem 0 0.25rem;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      line-height: 1.6;
     }
+    .figure-caption .fc-label {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--primary);
+      padding-top: 0.15rem;
+    }
+    .figure-caption .fc-body strong { font-weight: 600; color: var(--ink); }
 
-    /* Metrics */
+    /* Prose block */
+    .prose {
+      font-size: 1.05rem;
+      line-height: 1.75;
+      color: var(--text-main);
+      max-width: 68ch;
+    }
+    .prose p + p { margin-top: 1rem; }
+    .prose strong { color: var(--ink); font-weight: 600; }
+
+    /* Metrics — bold editorial */
     .results-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
+      gap: 0;
       margin-bottom: 2rem;
+      border: 1px solid var(--rule-soft);
+      background: var(--rule-soft);
     }
 
     .result-card {
-      background: var(--bg-surface-alt);
-      padding: 1.5rem;
-      border-radius: var(--radius-md);
-      text-align: center;
-      border: 1px solid rgba(0,0,0,0.02);
+      background: #fff;
+      padding: 2rem 1.5rem;
+      border-radius: 0;
+      text-align: left;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1.25rem;
+      min-height: 180px;
+      position: relative;
+      transition: background 0.3s ease;
     }
+    .result-card:hover { background: var(--paper-tint); }
+    .result-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--rule-soft);
+      transition: background 0.3s ease;
+    }
+    .result-card:hover::before { background: var(--primary); }
 
-    .metric {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: var(--primary);
+    .result-card .metric {
+      font-family: var(--font-display);
+      font-variation-settings: "opsz" 144, "SOFT" 20;
+      font-size: 3.4rem;
+      font-weight: 400;
+      color: var(--ink);
       line-height: 1;
-      margin-bottom: 0.25rem;
+      margin: 0;
+      letter-spacing: -0.03em;
     }
-
-    .metric-label {
+    .result-card .metric-label {
       color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
       font-weight: 500;
-      font-size: 0.875rem;
     }
+    .result-card.is-accent {
+      background: var(--ink);
+      color: var(--paper);
+    }
+    .result-card.is-accent .metric { color: var(--paper); }
+    .result-card.is-accent .metric-label { color: rgba(250,248,243,0.7); }
+    .result-card.is-accent:hover { background: var(--primary-dark); }
 
     /* Video Grid */
     .video-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1px;
+      background: var(--rule-soft);
+      border: 1px solid var(--rule-soft);
     }
 
     .video-card {
-      background: white;
-      border-radius: var(--radius-md);
+      background: #fff;
+      border-radius: 0;
       overflow: hidden;
-      box-shadow: var(--shadow-sm);
-      transition: all 0.3s ease;
-      border: 1px solid #f1f5f9;
+      box-shadow: none;
+      transition: transform 0.35s cubic-bezier(0.2,0.8,0.2,1);
+      border: none;
+      position: relative;
     }
-
-    .video-card:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
-    }
+    .video-card video { display: block; width: 100%; height: auto; background: var(--ink); }
+    .video-card:hover { z-index: 2; transform: scale(1.02); box-shadow: var(--shadow-lg); }
 
     .video-caption {
-      padding: 0.75rem;
-      font-size: 0.95rem;
-      font-weight: 700;
-      text-align: center;
-      color: var(--text-main);
-      background: var(--bg-surface-alt);
-      border-top: 1px solid #e2e8f0;
+      padding: 0.85rem 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 500;
+      text-align: left;
+      color: var(--ink);
+      background: #fff;
+      border-top: 1px solid var(--rule-soft);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
-    
+    .video-caption::after {
+      content: '→';
+      font-family: var(--font-body);
+      color: var(--primary);
+      font-weight: 600;
+      transition: transform 0.3s ease;
+    }
+    .video-card:hover .video-caption::after { transform: translateX(4px); }
+
     /* Animation */
     .fade-in-up {
-      animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       opacity: 0;
-      transform: translateY(20px);
+      transform: translateY(24px);
     }
 
     @keyframes fadeInUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Interactive Tabs */
-    .tabs.is-toggle li.is-active a {
-      background-color: var(--primary);
-      border-color: var(--primary);
+    /* Interactive Tabs — underline style */
+    .tabs {
+      margin-bottom: 2rem !important;
+      border-bottom: 1px solid var(--rule-soft);
     }
-    
+    .tabs ul {
+      border-bottom: none !important;
+      gap: 0.5rem;
+      padding-left: 0 !important;
+    }
+    .tabs.is-toggle ul { border: none; }
+    .tabs.is-toggle li a,
     .tabs li a {
-      justify-content: center;
-      font-weight: 600;
-      font-family: 'Manrope', sans-serif;
+      background: transparent !important;
+      border: none !important;
+      border-bottom: 2px solid transparent !important;
+      border-radius: 0 !important;
+      color: var(--text-muted) !important;
+      font-family: var(--font-mono) !important;
+      font-size: 0.78rem !important;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 500 !important;
+      padding: 0.9rem 1.25rem !important;
+      transition: color 0.25s, border-color 0.25s;
+      margin-bottom: -1px;
     }
+    .tabs.is-toggle li.is-active a,
+    .tabs li.is-active a {
+      background: transparent !important;
+      color: var(--ink) !important;
+      border-bottom-color: var(--primary) !important;
+    }
+    .tabs li a:hover { color: var(--ink) !important; }
+
+    /* Tab content: hide non-active by default (FIX for stacked-panels bug) */
+    .tab-content { display: none; opacity: 0; transition: opacity 0.4s ease; }
+    .tab-content.is-active { display: block; opacity: 1; }
+
+    /* Editorial callout box — replaces success-box / notification */
+    .callout {
+      position: relative;
+      padding: 1.5rem 1.5rem 1.5rem 2.75rem;
+      background: var(--paper-tint);
+      border-left: 2px solid var(--primary);
+      margin-top: 2rem;
+    }
+    .callout::before {
+      content: attr(data-kicker);
+      position: absolute;
+      top: 1.55rem; left: 1.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--primary);
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+    }
+    .callout h5 {
+      font-family: var(--font-display);
+      font-variation-settings: "opsz" 48, "SOFT" 40;
+      font-size: 1.2rem;
+      font-weight: 420;
+      font-style: italic;
+      color: var(--ink);
+      margin-bottom: 0.5rem;
+    }
+    .callout p {
+      font-size: 1rem;
+      line-height: 1.65;
+      color: var(--text-main);
+      margin: 0;
+    }
+    .callout.is-success { border-left-color: #15803d; }
+    .callout.is-success::before { color: #15803d; }
+
+    /* Contribution list */
+    .contrib-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      counter-reset: contrib;
+    }
+    .contrib-list li {
+      counter-increment: contrib;
+      padding: 1.25rem 0 1.25rem 3.5rem;
+      position: relative;
+      border-top: 1px solid var(--rule-soft);
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+    .contrib-list li:last-child { border-bottom: 1px solid var(--rule-soft); }
+    .contrib-list li::before {
+      content: counter(contrib, decimal-leading-zero);
+      position: absolute;
+      left: 0;
+      top: 1.3rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      color: var(--primary);
+      font-weight: 500;
+    }
+    .contrib-list li strong { font-weight: 600; color: var(--ink); }
+
+    /* Feature pillar cards for methodology */
+    .pillar-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--rule-soft);
+      border: 1px solid var(--rule-soft);
+      margin-top: 2.5rem;
+    }
+    .pillar {
+      background: #fff;
+      padding: 1.75rem 1.5rem 1.5rem;
+      position: relative;
+      transition: background 0.3s;
+    }
+    .pillar:hover { background: var(--paper-tint); }
+    .pillar-num {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+    .pillar h4 {
+      font-family: var(--font-display);
+      font-variation-settings: "opsz" 48, "SOFT" 40;
+      font-style: italic;
+      font-weight: 420;
+      font-size: 1.35rem;
+      margin-bottom: 0.55rem;
+      color: var(--ink);
+    }
+    .pillar p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* Comparison two-up */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      margin-top: 2.5rem;
+      border: 1px solid var(--rule-soft);
+    }
+    .compare-col {
+      padding: 1.75rem;
+    }
+    .compare-col + .compare-col { border-left: 1px solid var(--rule-soft); }
+    .compare-col.is-neg { background: #fff; }
+    .compare-col.is-pos { background: var(--ink); color: var(--paper); }
+    .compare-col h5 {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+      color: var(--primary);
+    }
+    .compare-col.is-pos h5 { color: #fbbf24; }
+    .compare-col ul { list-style: none; padding: 0; margin: 0; }
+    .compare-col li {
+      padding: 0.75rem 0;
+      border-top: 1px solid var(--rule-soft);
+      font-size: 0.95rem;
+      line-height: 1.55;
+    }
+    .compare-col.is-pos li { border-top-color: rgba(250,248,243,0.12); }
+    .compare-col li:first-child { border-top: none; padding-top: 0; }
+    .compare-col li strong { font-weight: 600; }
+    .compare-col.is-pos li strong { color: #fbbf24; }
+
+    /* Insight box (smaller callout) */
+    .insight {
+      padding: 1.5rem 1.75rem;
+      background: var(--ink);
+      color: var(--paper);
+      margin-bottom: 2rem;
+    }
+    .insight .kicker {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #fbbf24;
+      margin-bottom: 0.5rem;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .insight p {
+      font-family: var(--font-display);
+      font-variation-settings: "opsz" 48, "SOFT" 40;
+      font-weight: 360;
+      font-style: italic;
+      font-size: 1.35rem;
+      line-height: 1.4;
+      margin: 0;
+    }
+    .insight p strong {
+      font-family: var(--font-body);
+      font-style: normal;
+      font-weight: 600;
+      color: #fbbf24;
+      font-size: 1.1em;
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--ink) !important;
+      color: var(--paper) !important;
+      padding: 5rem 1.5rem !important;
+      border-top: 1px solid var(--rule);
+    }
+    .footer h4 {
+      font-family: var(--font-display);
+      font-variation-settings: "opsz" 72, "SOFT" 40;
+      font-weight: 400;
+      font-size: 2rem;
+      color: var(--paper) !important;
+      margin-bottom: 0.5rem;
+    }
+    .footer p { color: rgba(250,248,243,0.65); }
+    .footer a { color: var(--paper); border-bottom: 1px solid rgba(250,248,243,0.3); text-decoration: none !important; }
+    .footer a:hover { border-bottom-color: var(--paper); }
+
+    /* Bulma column padding override for denser layout */
+    .columns.is-gapless-custom { margin: 0; }
+
+    /* Generalization protocol table */
+    .gen-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .gen-table td {
+      padding: 0.85rem 0;
+      border-top: 1px solid var(--rule-soft);
+      font-size: 0.95rem;
+    }
+    .gen-table tr:first-child td { border-top: none; }
+    .gen-table .tag-cell {
+      width: 58px;
+      padding-right: 0.75rem;
+    }
+    .gen-table .tag {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      font-weight: 600;
+      background: var(--paper-tint);
+      color: var(--primary);
+      padding: 0.3rem 0.55rem;
+      border-radius: 0;
+      border: 1px solid var(--rule-soft);
+      display: inline-block;
+      min-width: 42px;
+      text-align: center;
+    }
+    .gen-table .tag.is-secondary { color: var(--secondary); }
+    .gen-table .tag.is-accent { color: var(--accent); }
 
     /* Responsive */
+    @media (max-width: 900px) {
+      .hero-face { width: 100%; opacity: 0.18; }
+      .section { padding: 4rem 1.25rem; }
+      .results-grid, .pillar-grid { grid-template-columns: 1fr; }
+      .compare-grid { grid-template-columns: 1fr; }
+      .compare-col + .compare-col { border-left: none; border-top: 1px solid var(--rule-soft); }
+      .figure-caption { grid-template-columns: 1fr; }
+      .figure-caption .fc-label { padding-top: 0; }
+    }
     @media (max-width: 768px) {
       .hero {
         padding-top: 6rem !important;
         padding-bottom: 3rem !important;
       }
-      .publication-title {
-        font-size: 2rem;
-      }
+      .publication-title { font-size: 2.25rem; }
       .navbar-float {
-        width: 90%;
-        font-size: 0.8rem;
+        max-width: 94%;
+        font-size: 0.75rem;
         overflow-x: auto;
         justify-content: flex-start;
-        -ms-overflow-style: none;  /* IE and Edge */
-        scrollbar-width: none;  /* Firefox */
+        -ms-overflow-style: none;
+        scrollbar-width: none;
       }
-      .navbar-float::-webkit-scrollbar {
-        display: none;
-      }
-      .results-grid {
-        grid-template-columns: 1fr;
-      }
+      .navbar-float::-webkit-scrollbar { display: none; }
     }
 
     /* Utility */
-    .has-text-justified-mobile {
-      text-align: justify;
-      hyphens: auto;
-    }
-
-    .result-card {
-      background: var(--bg-surface-alt);
-      padding: 1.5rem;
-      border-radius: var(--radius-md);
-      text-align: center;
-      border: 1px solid rgba(226, 232, 240, 0.8);
-      transition: all 0.3s ease;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .result-card:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--shadow-md);
-      background: white;
-      border-color: var(--primary);
-    }
-
-    .metric {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: var(--primary);
-      line-height: 1;
-      margin-bottom: 0.25rem;
-    }
-
-    .metric-label {
-      color: var(--text-muted);
-      font-weight: 500;
-      font-size: 0.875rem;
-    }
-    
-    /* Table Tweaks */
-    .tag-cell {
-      white-space: nowrap;
-      width: 1%;
-    }
+    .has-text-justified-mobile { text-align: left; }
+    .tag-cell { white-space: nowrap; width: 1%; }
   </style>
 </head>
 
@@ -348,64 +856,61 @@
 
   <!-- Hero Section -->
 <section class="hero">
-  <div class="hero-bg-accent"></div>
-  <div class="hero-bg-accent-2"></div>
-  
+  <div class="hero-face" aria-hidden="true"></div>
+
   <div class="hero-body">
     <div class="container is-max-desktop">
-      <div class="columns is-centered">
-        <div class="column has-text-centered fade-in-up">
-          <h1 class="title is-1 publication-title">
-            Learning Part-Aware Dense 3D Feature Field for Generalizable Articulated Object Manipulation
+      <div class="columns">
+        <div class="column is-10 fade-in-up">
+          <div class="hero-meta">
+            <span class="dot"></span>
+            <span>PA3FF — Part-Aware 3D Feature Field</span>
+            <span class="rule"></span>
+            <span>ICLR 2026</span>
+          </div>
+
+          <h1 class="publication-title">
+            Learning Part-Aware Dense 3D Feature Field for <em>Generalizable Articulated Object Manipulation</em>
           </h1>
+
           <div class="publication-authors">
-            <span class="author-block"><strong>Yue Chen</strong><sup>1</sup><sup>*</sup></span>,
-            <span class="author-block"><strong>Muqing Jiang</strong><sup>1</sup><sup>*</sup></span>,
-            <span class="author-block"><strong>Kaifeng Zheng</strong><sup>2</sup><sup>*</sup></span>,
-            <br> 
+            <span class="author-block"><strong>Yue Chen</strong><sup>1*</sup></span>,
+            <span class="author-block"><strong>Muqing Jiang</strong><sup>1*</sup></span>,
+            <span class="author-block"><strong>Kaifeng Zheng</strong><sup>2*</sup></span>,
             <span class="author-block">Jiaqi Liang<sup>1</sup></span>,
             <span class="author-block">Chenrui Tie<sup>3</sup></span>,
             <span class="author-block">Haoran Lu<sup>1</sup></span>,
-            <span class="author-block">Ruihai Wu<sup>1</sup><sup>†</sup></span>,
-            <span class="author-block">Hao Dong<sup>1</sup><sup>†</sup></span>
+            <span class="author-block">Ruihai Wu<sup>1†</sup></span>,
+            <span class="author-block">Hao Dong<sup>1†</sup></span>
 
-            <div style="font-size: 0.85rem; opacity: 0.9; margin-top: 0.3rem; display: block; line-height: 1.5;">
-              <sup>1</sup> Peking University &nbsp;&nbsp; 
-              <sup>2</sup> Beijing Institute of Technology &nbsp;&nbsp; 
+            <div class="author-affil">
+              <sup>1</sup> Peking University &nbsp;·&nbsp;
+              <sup>2</sup> Beijing Institute of Technology &nbsp;·&nbsp;
               <sup>3</sup> National University of Singapore
             </div>
-
-            <!-- 新增作者标注说明 -->
-            <div style="font-size: 0.85rem; opacity: 0.9; margin-top: 0.75rem; display: block;">
-              <sup>*</sup> Equal contribution &nbsp;&nbsp; <sup>†</sup> Corresponding author
+            <div class="author-note">
+              <sup>*</sup> Equal contribution &nbsp;·&nbsp; <sup>†</sup> Corresponding author
             </div>
-            <br>
-            <!-- 👇 修改后的论文状态 -->
-            <span style="font-size: 0.95rem; opacity: 0.8; margin-top: 0.5rem; display: block;">
-              <i class="fas fa-check-circle" style="color: #10b981; margin-right: 6px;"></i>
-              Accepted to <strong>ICLR 2026</strong> 🎉
-            </span>
           </div>
 
+          <span class="venue-badge">
+            <span class="dot"></span>
+            Accepted to ICLR 2026
+          </span>
+
           <div class="publication-links">
-            <span class="link-block">
-              <a href="./static/papers/paper.pdf" class="external-link button is-normal is-rounded">
-                <span class="icon"><i class="fas fa-file-pdf"></i></span>
-                <span>Read Paper</span>
-              </a>
-            </span>
-            <span class="link-block">
-              <a href="https://github.com/PA3FF/PA3FF" class="external-link button is-normal is-rounded">
-                <span class="icon"><i class="fab fa-github"></i></span>
-                <span>View Code</span>
-              </a>
-            </span>
-            <span class="link-block">
-              <a href="#videos" class="external-link button is-normal is-rounded">
-                <span class="icon"><i class="fas fa-play"></i></span>
-                <span>Watch Demo</span>
-              </a>
-            </span>
+            <a href="./static/papers/paper.pdf" class="button">
+              <span>Read Paper</span>
+              <span class="icon ml-2"><i class="fas fa-arrow-right"></i></span>
+            </a>
+            <a href="https://github.com/PA3FF/PA3FF" class="button is-ghost">
+              <span class="icon mr-2"><i class="fab fa-github"></i></span>
+              <span>View Code</span>
+            </a>
+            <a href="#videos" class="button is-ghost">
+              <span class="icon mr-2"><i class="fas fa-play"></i></span>
+              <span>Watch Demo</span>
+            </a>
           </div>
         </div>
       </div>
@@ -416,25 +921,28 @@
   <!-- Abstract Section -->
   <section class="section" id="abstract">
     <div class="container is-max-desktop">
-      <div class="columns is-centered">
-        <div class="column fade-in-up">
-          <h2 class="section-title">Abstract</h2>
-          
-          <div class="content-box">
-            <div class="content has-text-justified-mobile" style="font-size: 1.1rem; color: var(--text-main);">
-              <p>
-                Articulated object manipulation is essential for real-world robotic tasks, yet generalizing across diverse objects remains challenging. The key lies in understanding <strong>functional parts</strong> (e.g., handles, knobs) that indicate where and how to manipulate across diverse categories and shapes.
-              </p>
-              <p>
-                Previous approaches using 2D foundation features face critical limitations when lifted to 3D: long runtimes, multi-view inconsistencies, and low spatial resolution with insufficient geometric information.
-              </p>
-              <p>
-                We propose <strong>Part-Aware 3D Feature Field (PA3FF)</strong>, a novel dense 3D representation with part awareness for generalizable manipulation. PA3FF is trained via contrastive learning on 3D part proposals from large-scale datasets. Given point clouds as input, it predicts continuous 3D feature fields in a feedforward manner, where feature proximity reflects functional part relationships.
-              </p>
-              <p>
-                Building on PA3FF, we introduce <strong>Part-Aware Diffusion Policy (PADP)</strong> for enhanced sample efficiency and generalization. PADP significantly outperforms existing 2D and 3D representations (CLIP, DINOv2, Grounded-SAM), achieving state-of-the-art performance on both simulated and real-world tasks.
-              </p>
-            </div>
+      <div class="columns">
+        <div class="column is-3 fade-in-up">
+          <div class="section-index">
+            <span class="num">§ 01</span>
+            <span>Abstract</span>
+          </div>
+        </div>
+        <div class="column is-9 fade-in-up" style="animation-delay: 0.1s;">
+          <h2 class="section-title">Teaching robots to <em>see parts</em>, not just shapes.</h2>
+          <div class="prose">
+            <p>
+              Articulated object manipulation is essential for real-world robotic tasks, yet generalizing across diverse objects remains challenging. The key lies in understanding <strong>functional parts</strong> (e.g., handles, knobs) that indicate where and how to manipulate across diverse categories and shapes.
+            </p>
+            <p>
+              Previous approaches using 2D foundation features face critical limitations when lifted to 3D: long runtimes, multi-view inconsistencies, and low spatial resolution with insufficient geometric information.
+            </p>
+            <p>
+              We propose <strong>Part-Aware 3D Feature Field (PA3FF)</strong>, a novel dense 3D representation with part awareness for generalizable manipulation. PA3FF is trained via contrastive learning on 3D part proposals from large-scale datasets. Given point clouds as input, it predicts continuous 3D feature fields in a feedforward manner, where feature proximity reflects functional part relationships.
+            </p>
+            <p>
+              Building on PA3FF, we introduce <strong>Part-Aware Diffusion Policy (PADP)</strong> for enhanced sample efficiency and generalization. PADP significantly outperforms existing 2D and 3D representations (CLIP, DINOv2, Grounded-SAM), achieving state-of-the-art performance on both simulated and real-world tasks.
+            </p>
           </div>
         </div>
       </div>
@@ -442,85 +950,91 @@
   </section>
 
   <!-- Overview Section -->
-  <section class="section" id="overview">
+  <section class="section" id="overview" style="background: var(--bg-surface-alt);">
     <div class="container is-max-desktop">
-      <div class="columns is-centered">
-        <div class="column fade-in-up" style="animation-delay: 0.2s;">
-          <h2 class="section-title">Overview</h2>
-        <hr>
-        
-        <div class="content-box">
-          <figure>
-            <img src="./static/images/figure1.png" alt="PA3FF Overview" style="width: 100%;">
-            <figcaption>
-              <strong>PA3FF Framework:</strong> We propose a feedforward model that predicts part-aware 3D feature fields, enabling generalizable manipulation across unseen objects. Our part-aware diffusion policy (PADP) achieves significant performance improvements with only 6.25% performance drop on unseen objects. PA3FF exhibits consistency across shapes, enabling downstream applications including correspondence learning and segmentation.
-            </figcaption>
-          </figure>
+      <div class="columns">
+        <div class="column is-3 fade-in-up">
+          <div class="section-index">
+            <span class="num">§ 02</span>
+            <span>Overview</span>
+          </div>
+        </div>
+        <div class="column is-9 fade-in-up" style="animation-delay: 0.1s;">
+          <h2 class="section-title">A feedforward pipeline from <em>point clouds</em> to manipulation policy.</h2>
 
-          <div class="success-box">
-            <p style="font-size: 1.05rem; margin-bottom: 1rem;"><strong>Key Contributions:</strong></p>
-            <ul style="margin-bottom: 0; list-style: none; padding-left: 0;">
-              <li style="padding-left: 1.5rem; margin-bottom: 0.75rem; position: relative;">
-                <span style="position: absolute; left: 0; color: #10b981; font-weight: 700;">•</span>
-                We introduce <strong>PA3FF</strong>, a 3D-native representation that encodes dense, semantic, and functional part-aware features directly from point clouds
+          <figure class="figure-plate" data-label="Fig. 01 — Framework">
+            <img src="./static/images/figure1.png" alt="PA3FF Overview">
+          </figure>
+          <div class="figure-caption">
+            <div class="fc-label">Figure 01</div>
+            <div class="fc-body">
+              <strong>PA3FF Framework.</strong> We propose a feedforward model that predicts part-aware 3D feature fields, enabling generalizable manipulation across unseen objects. Our part-aware diffusion policy (PADP) achieves significant performance improvements with only 6.25% performance drop on unseen objects. PA3FF exhibits consistency across shapes, enabling downstream applications including correspondence learning and segmentation.
+            </div>
+          </div>
+
+          <div class="callout is-success" data-kicker="Key Contributions" style="margin-top: 3rem;">
+            <h5>Four contributions.</h5>
+            <ol class="contrib-list" style="margin-top: 1rem;">
+              <li>
+                We introduce <strong>PA3FF</strong>, a 3D-native representation that encodes dense, semantic, and functional part-aware features directly from point clouds.
               </li>
-              <li style="padding-left: 1.5rem; margin-bottom: 0.75rem; position: relative;">
-                <span style="position: absolute; left: 0; color: #10b981; font-weight: 700;">•</span>
-                We develop <strong>PADP</strong>, a diffusion policy that leverages PA3FF for generalizable manipulation with strong sample efficiency
+              <li>
+                We develop <strong>PADP</strong>, a diffusion policy that leverages PA3FF for generalizable manipulation with strong sample efficiency.
               </li>
-              <li style="padding-left: 1.5rem; margin-bottom: 0.75rem; position: relative;">
-                <span style="position: absolute; left: 0; color: #10b981; font-weight: 700;">•</span>
-                PA3FF can further enable diverse downstream methods, including correspondence learning and segmentation, making it a versatile foundation for robotic manipulation
+              <li>
+                PA3FF enables diverse downstream methods including correspondence learning and segmentation, making it a versatile foundation for robotic manipulation.
               </li>
-              <li style="padding-left: 1.5rem; margin-bottom: 0; position: relative;">
-                <span style="position: absolute; left: 0; color: #10b981; font-weight: 700;">•</span>
-                We validate our approach on 16 PartInstruct and 8 real-world tasks, where it significantly outperforms prior 2D and 3D representations (CLIP, DINOv2, and Grounded-SAM), offering a 15% and 16.5% increase
+              <li>
+                We validate on 16 PartInstruct and 8 real-world tasks, outperforming prior 2D and 3D representations (CLIP, DINOv2, Grounded-SAM) by <strong>+15%</strong> and <strong>+16.5%</strong>.
               </li>
-            </ul>
+            </ol>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
   <!-- Method Section -->
   <section class="section" id="method">
     <div class="container is-max-desktop">
-      <div class="columns is-centered">
-        <div class="column fade-in-up">
-          <h2 class="section-title">Methodology</h2>
-          
-          <div class="content-box">
-            <figure class="image">
-              <img src="./static/images/pipeline.png" alt="Method Pipeline" style="width: 100%; border-radius: var(--radius-md);">
-              <figcaption class="mt-4">
-                <strong>Three-Stage Training Framework:</strong> 
-                (1) <strong>Geometric Pre-training:</strong> Leverage 3D geometric priors from large-scale datasets.
-                (2) <strong>Part-Aware Contrastive Learning:</strong> Learn dense 3D feature fields to enhance part-level consistency.
-                (3) <strong>Policy Learning:</strong> Integrate refined features into a diffusion policy for generalizable manipulation.
-              </figcaption>
-            </figure>
+      <div class="columns">
+        <div class="column is-3 fade-in-up">
+          <div class="section-index">
+            <span class="num">§ 03</span>
+            <span>Methodology</span>
+          </div>
+        </div>
+        <div class="column is-9 fade-in-up" style="animation-delay: 0.1s;">
+          <h2 class="section-title">Three stages of training, from <em>geometry</em> to <em>policy</em>.</h2>
 
-            <div class="columns is-multiline mt-5">
-              <div class="column is-4 fade-in-up" style="animation-delay: 0.1s;">
-                <div class="box has-background-light has-text-centered" style="height: 100%; display: flex; flex-direction: column; justify-content: flex-start; padding: 2rem;">
-                  <h4 class="title is-5 mb-3"><i class="fas fa-cube fa-lg mr-2" style="color: var(--primary);"></i>3D-Native</h4>
-                  <p style="font-size: 1.1rem; line-height: 1.6;">Directly processes point clouds, avoiding the inconsistencies of 2D multi-view lifting.</p>
-                </div>
-              </div>
-              <div class="column is-4 fade-in-up" style="animation-delay: 0.2s;">
-                <div class="box has-background-light has-text-centered" style="height: 100%; display: flex; flex-direction: column; justify-content: flex-start; padding: 2rem;">
-                  <h4 class="title is-5 mb-3"><i class="fas fa-layer-group fa-lg mr-2" style="color: var(--secondary);"></i>Dense Features</h4>
-                  <p style="font-size: 1.1rem; line-height: 1.6;">Predicts continuous per-point features that capture fine-grained geometric details.</p>
-                </div>
-              </div>
-              <div class="column is-4 fade-in-up" style="animation-delay: 0.3s;">
-                <div class="box has-background-light has-text-centered" style="height: 100%; display: flex; flex-direction: column; justify-content: flex-start; padding: 2rem;">
-                  <h4 class="title is-5 mb-3"><i class="fas fa-bolt fa-lg mr-2" style="color: var(--accent);"></i>Efficient</h4>
-                  <p style="font-size: 1.1rem; line-height: 1.6;">Single feedforward pass for fast inference, suitable for real-time robotic control.</p>
-                </div>
-              </div>
+          <figure class="figure-plate" data-label="Fig. 02 — Pipeline">
+            <img src="./static/images/pipeline.png" alt="Method Pipeline">
+          </figure>
+          <div class="figure-caption">
+            <div class="fc-label">Figure 02</div>
+            <div class="fc-body">
+              <strong>Three-Stage Training Framework.</strong>
+              (1) <strong>Geometric Pre-training</strong> — leverage 3D geometric priors from large-scale datasets.
+              (2) <strong>Part-Aware Contrastive Learning</strong> — learn dense 3D feature fields that enhance part-level consistency.
+              (3) <strong>Policy Learning</strong> — integrate refined features into a diffusion policy for generalizable manipulation.
+            </div>
+          </div>
+
+          <div class="pillar-grid">
+            <div class="pillar fade-in-up" style="animation-delay: 0.15s;">
+              <div class="pillar-num">01 · 3D-Native</div>
+              <h4>Point-cloud first.</h4>
+              <p>Directly processes point clouds, avoiding the inconsistencies of 2D multi-view lifting.</p>
+            </div>
+            <div class="pillar fade-in-up" style="animation-delay: 0.25s;">
+              <div class="pillar-num">02 · Dense features</div>
+              <h4>Continuous fields.</h4>
+              <p>Predicts per-point features that capture fine-grained geometric details across the full surface.</p>
+            </div>
+            <div class="pillar fade-in-up" style="animation-delay: 0.35s;">
+              <div class="pillar-num">03 · Efficient</div>
+              <h4>Single pass, real-time.</h4>
+              <p>One feedforward inference — suitable for real-time robotic control with minimal latency.</p>
             </div>
           </div>
         </div>
@@ -529,41 +1043,44 @@
   </section>
 
   <!-- Qualitative Comparison Section -->
-  <section class="section" style="background-color: var(--bg-surface-alt);">
+  <section class="section" id="why-pa3ff">
     <div class="container is-max-desktop">
-      <div class="columns is-centered">
-        <div class="column fade-in-up">
-          <h2 class="section-title">Why PA3FF?</h2>
-          
-          <div class="content-box">
-            <figure class="image">
-              <img src="./static/images/feature_comparison.png" alt="Feature Comparison" style="width: 100%;">
-              <figcaption class="mt-4">
-                <strong>Visual Comparison:</strong> PA3FF generates smooth, semantically consistent 3D feature fields. In contrast, 2D-lifting methods (like DINOv2) suffer from noise and inconsistency across views, while other 3D baselines (Sonata) lack discriminative detail for functional parts.
-              </figcaption>
-            </figure>
+      <div class="columns">
+        <div class="column is-3 fade-in-up">
+          <div class="section-index">
+            <span class="num">§ 04</span>
+            <span>Why PA3FF</span>
+          </div>
+        </div>
+        <div class="column is-9 fade-in-up" style="animation-delay: 0.1s;">
+          <h2 class="section-title">Smooth, <em>view-invariant</em>, and discriminative where it matters.</h2>
 
-            <div class="columns mt-5">
-              <div class="column">
-                <div class="notification is-warning is-light">
-                  <h5 class="title is-5 mb-3">Limitations of 2D Lifting</h5>
-                  <ul style="font-size: 1.1rem; line-height: 1.8; list-style-type: disc; margin-left: 1.5rem;">
-                    <li style="margin-bottom: 0.5rem;"><strong>Inconsistency:</strong> Features fluctuate across different viewpoints.</li>
-                    <li style="margin-bottom: 0.5rem;"><strong>Resolution:</strong> Small/thin parts (handles) are often lost in 2D renderings.</li>
-                    <li><strong>Latency:</strong> Multi-view fusion is computationally expensive.</li>
-                  </ul>
-                </div>
-              </div>
-              <div class="column">
-                <div class="notification is-success is-light">
-                  <h5 class="title is-5 mb-3">PA3FF Advantages</h5>
-                  <ul style="font-size: 1.1rem; line-height: 1.8; list-style-type: disc; margin-left: 1.5rem;">
-                    <li style="margin-bottom: 0.5rem;"><strong>Consistency:</strong> 3D-native prediction ensures viewpoint invariance.</li>
-                    <li style="margin-bottom: 0.5rem;"><strong>Precision:</strong> Dense per-point features capture fine geometric details.</li>
-                    <li><strong>Speed:</strong> Feedforward network enables real-time interaction.</li>
-                  </ul>
-                </div>
-              </div>
+          <figure class="figure-plate" data-label="Fig. 03 — Feature comparison">
+            <img src="./static/images/feature_comparison.png" alt="Feature Comparison">
+          </figure>
+          <div class="figure-caption">
+            <div class="fc-label">Figure 03</div>
+            <div class="fc-body">
+              <strong>Visual Comparison.</strong> PA3FF generates smooth, semantically consistent 3D feature fields. In contrast, 2D-lifting methods (like DINOv2) suffer from noise and inconsistency across views, while other 3D baselines (Sonata) lack discriminative detail for functional parts.
+            </div>
+          </div>
+
+          <div class="compare-grid">
+            <div class="compare-col is-neg">
+              <h5>— 2D Lifting Limits</h5>
+              <ul>
+                <li><strong>Inconsistency.</strong> Features fluctuate across different viewpoints.</li>
+                <li><strong>Resolution.</strong> Small/thin parts (handles) are often lost in 2D renderings.</li>
+                <li><strong>Latency.</strong> Multi-view fusion is computationally expensive.</li>
+              </ul>
+            </div>
+            <div class="compare-col is-pos">
+              <h5>+ PA3FF Advantages</h5>
+              <ul>
+                <li><strong>Consistency.</strong> 3D-native prediction ensures viewpoint invariance.</li>
+                <li><strong>Precision.</strong> Dense per-point features capture fine geometric details.</li>
+                <li><strong>Speed.</strong> Feedforward network enables real-time interaction.</li>
+              </ul>
             </div>
           </div>
         </div>
@@ -572,141 +1089,89 @@
   </section>
 
   <!-- Results Section -->
-  <section class="section" id="results">
+  <section class="section" id="results" style="background: var(--bg-surface-alt);">
     <div class="container is-max-desktop">
-      <div class="columns is-centered">
-        <div class="column fade-in-up">
-          <h2 class="section-title">Experimental Results</h2>
-          
-          <div class="tabs is-toggle is-centered is-rounded">
+      <div class="columns">
+        <div class="column is-3 fade-in-up">
+          <div class="section-index">
+            <span class="num">§ 05</span>
+            <span>Results</span>
+          </div>
+        </div>
+        <div class="column is-9 fade-in-up" style="animation-delay: 0.1s;">
+          <h2 class="section-title">Experiments — <em>simulation</em>, real-world, ablation.</h2>
+
+          <div class="tabs">
             <ul>
-              <li class="is-active" data-tab="real-world"><a><span class="icon"><i class="fas fa-robot"></i></span> <span>Real-World</span></a></li>
-              <li data-tab="simulation"><a><span class="icon"><i class="fas fa-desktop"></i></span> <span>Simulation</span></a></li>
-              <li data-tab="ablation"><a><span class="icon"><i class="fas fa-chart-bar"></i></span> <span>Ablation</span></a></li>
+              <li class="is-active" data-tab="real-world"><a>01 / Real-World</a></li>
+              <li data-tab="simulation"><a>02 / Simulation</a></li>
+              <li data-tab="ablation"><a>03 / Ablation</a></li>
             </ul>
           </div>
 
           <!-- Real-World Tab -->
           <div class="tab-content is-active" id="real-world">
-            <div class="content-box">
-              <div class="columns is-multiline">
-                <!-- Top: Visual Results -->
-                <div class="column is-12">
-                  <div class="box p-2" style="border: 1px solid #f1f5f9; box-shadow: var(--shadow-sm);">
-                    <figure class="image">
-                      <img src="./static/images/real_world_results.png" alt="Real-World Results" style="width: 100%;">
-                    </figure>
-                  </div>
-                  <figcaption class="mt-3 has-text-centered" style="font-family: 'Inter', sans-serif; font-size: 0.9rem; color: var(--text-muted);">
-                    <strong>Table 2:</strong> Real-world manipulation success rates across 8 diverse tasks.
-                  </figcaption>
-                </div>
+            <figure class="figure-plate" data-label="Tab. 02 — Real-World">
+              <img src="./static/images/real_world_results.png" alt="Real-World Results">
+            </figure>
+            <div class="figure-caption">
+              <div class="fc-label">Table 02</div>
+              <div class="fc-body"><strong>Real-world manipulation success rates</strong> across 8 diverse tasks.</div>
+            </div>
 
-                <!-- Bottom: Metrics & Analysis -->
-                <div class="column is-12">
-                  <!-- Key Insight -->
-                  <div class="box mb-5" style="background: linear-gradient(to right, #eff6ff, #ffffff); border-left: 4px solid var(--primary); border-radius: 6px; padding: 1.5rem; box-shadow: var(--shadow-sm);">
-                    <div class="media">
-                      <div class="media-left">
-                        <span class="icon is-medium has-text-primary">
-                          <i class="fas fa-trophy fa-lg"></i>
-                        </span>
-                      </div>
-                      <div class="media-content">
-                        <h5 class="title is-6 mb-2" style="color: var(--primary-dark); font-family: 'Manrope', sans-serif;">State-of-the-Art Performance</h5>
-                        <p style="font-size: 1.05rem; line-height: 1.6; color: var(--text-main);">
-                          PADP achieves a <strong>58.8%</strong> success rate on unseen objects, outperforming the best baseline (GenDP) by <strong>+23.8%</strong>, effectively bridging the sim-to-real gap.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+            <div class="insight" style="margin-top: 2.5rem;">
+              <div class="kicker"><i class="fas fa-trophy"></i> State-of-the-art</div>
+              <p>PADP achieves <strong>58.8%</strong> success on unseen objects — outperforming the best baseline (GenDP) by <strong>+23.8 pts</strong>, effectively closing the sim-to-real gap.</p>
+            </div>
 
-                  <!-- Metrics Grid -->
-                  <h5 class="title is-6 mb-3" style="font-family: 'Manrope', sans-serif; font-weight: 700;">Performance Metrics</h5>
-                  <div class="results-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
-                    <div class="result-card p-4">
-                      <div class="metric" style="font-size: 2.5rem;">58.8%</div>
-                      <div class="metric-label" style="font-size: 0.9rem;">Success (Unseen)</div>
-                    </div>
-                    <div class="result-card p-4">
-                      <div class="metric" style="color: var(--secondary); font-size: 2.5rem;">35.0%</div>
-                      <div class="metric-label" style="font-size: 0.9rem;">Baseline (GenDP)</div>
-                    </div>
-                    <div class="result-card p-4" style="background: var(--primary); color: white;">
-                      <div class="metric" style="color: white; font-size: 2.5rem;">+23.8%</div>
-                      <div class="metric-label" style="color: rgba(255,255,255,0.9); font-size: 0.9rem;">Absolute Improvement</div>
-                    </div>
-                  </div>
-                </div>
+            <div class="results-grid">
+              <div class="result-card">
+                <div class="metric-label">Success · Unseen</div>
+                <div class="metric">58.8<span style="font-size:0.5em; color: var(--text-muted); margin-left: 0.15em;">%</span></div>
+              </div>
+              <div class="result-card">
+                <div class="metric-label">Baseline · GenDP</div>
+                <div class="metric" style="color: var(--text-muted);">35.0<span style="font-size:0.5em; margin-left: 0.15em;">%</span></div>
+              </div>
+              <div class="result-card is-accent">
+                <div class="metric-label">Δ Absolute improvement</div>
+                <div class="metric">+23.8<span style="font-size:0.5em; margin-left: 0.15em; color: #fbbf24;">pts</span></div>
               </div>
             </div>
           </div>
 
           <!-- Simulation Tab -->
           <div class="tab-content" id="simulation">
-            <div class="content-box">
-              <div class="columns is-multiline">
-                <!-- Top: Chart (Full Width) -->
-                <div class="column is-12">
-                  <figure class="image" style="border: 1px solid #f1f5f9; border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm);">
-                    <img src="./static/images/simulation_results.png" alt="Simulation Results" style="width: 100%; display: block;">
-                  </figure>
-                  <figcaption class="mt-3 has-text-centered" style="font-family: 'Inter', sans-serif; font-size: 0.9rem; color: var(--text-muted);">
-                    <strong>Figure 2:</strong> Success rates on PartInstruct benchmark across 5 generalization levels.
-                  </figcaption>
-                </div>
-                
-                <!-- Bottom: Analysis (Split Columns) -->
-                <div class="column is-6">
-                  <!-- Key Result Card -->
-                  <div class="box" style="background: linear-gradient(to right, #f8fafc, #ffffff); border-left: 4px solid var(--primary); border-radius: 6px; padding: 1.5rem; box-shadow: var(--shadow-sm); height: 100%;">
-                    <div class="media">
-                      <div class="media-left">
-                        <span class="icon is-medium has-text-primary">
-                          <i class="fas fa-lightbulb fa-lg"></i>
-                        </span>
-                      </div>
-                      <div class="media-content">
-                        <h5 class="title is-6 mb-2" style="color: var(--primary-dark); font-family: 'Manrope', sans-serif;">Key Insight</h5>
-                        <p style="font-size: 1.05rem; line-height: 1.6; color: var(--text-main);">
-                          PADP achieves <strong>28.8%</strong> average success rate, outperforming GenDP (19.4%) by a significant margin (+9.4%). It demonstrates superior robustness on <strong>Novel Object Categories (OC)</strong>, validating the generalization capability of our part-aware features.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+            <figure class="figure-plate" data-label="Fig. 04 — Simulation">
+              <img src="./static/images/simulation_results.png" alt="Simulation Results">
+            </figure>
+            <div class="figure-caption">
+              <div class="fc-label">Figure 04</div>
+              <div class="fc-body"><strong>Success rates on PartInstruct benchmark</strong> across 5 generalization levels.</div>
+            </div>
 
-                <div class="column is-6">
-                  <!-- Protocol List -->
-                  <div class="box" style="height: 100%; padding: 1.25rem; border: 1px solid #f1f5f9; box-shadow: var(--shadow-sm);">
-                    <h5 class="title is-6 mb-3" style="font-family: 'Manrope', sans-serif; font-weight: 700;">Generalization Protocol</h5>
-                    <div class="table-container">
-                      <table class="table is-fullwidth is-hoverable" style="background: transparent; font-family: 'Inter', sans-serif; margin-bottom: 0;">
-                        <tbody>
-                          <tr>
-                            <td class="tag-cell" style="border: none; padding: 0.35rem 0;"><span class="tag is-light has-text-weight-bold" style="color: var(--primary); background-color: #e0e7ff; width: 40px;">OS</span></td>
-                            <td style="border: none; padding: 0.35rem 0 0.35rem 0.75rem;"><strong>Object States</strong> <span class="has-text-grey-light is-size-7 ml-1">(Pose/Rotation)</span></td>
-                          </tr>
-                          <tr>
-                            <td class="tag-cell" style="border: none; padding: 0.35rem 0;"><span class="tag is-light has-text-weight-bold" style="color: var(--primary); background-color: #e0e7ff; width: 40px;">OI</span></td>
-                            <td style="border: none; padding: 0.35rem 0 0.35rem 0.75rem;"><strong>Object Instances</strong> <span class="has-text-grey-light is-size-7 ml-1">(Same Category)</span></td>
-                          </tr>
-                          <tr>
-                            <td class="tag-cell" style="border: none; padding: 0.35rem 0;"><span class="tag is-light has-text-weight-bold" style="color: var(--primary); background-color: #e0e7ff; width: 40px;">TP</span></td>
-                            <td style="border: none; padding: 0.35rem 0 0.35rem 0.75rem;"><strong>Task Parts</strong> <span class="has-text-grey-light is-size-7 ml-1">(New Parts)</span></td>
-                          </tr>
-                          <tr>
-                            <td class="tag-cell" style="border: none; padding: 0.35rem 0;"><span class="tag is-light has-text-weight-bold" style="color: var(--secondary); background-color: #fce7f3; width: 40px;">TC</span></td>
-                            <td style="border: none; padding: 0.35rem 0 0.35rem 0.75rem;"><strong>Task Categories</strong> <span class="has-text-grey-light is-size-7 ml-1">(New Tasks)</span></td>
-                          </tr>
-                          <tr>
-                            <td class="tag-cell" style="border: none; padding: 0.35rem 0;"><span class="tag is-light has-text-weight-bold" style="color: var(--accent); background-color: #ede9fe; width: 40px;">OC</span></td>
-                            <td style="border: none; padding: 0.35rem 0 0.35rem 0.75rem;"><strong>Object Categories</strong> <span class="has-text-grey-light is-size-7 ml-1">(Unseen Class)</span></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
+            <div class="columns mt-5">
+              <div class="column is-6">
+                <div class="insight" style="height: 100%; margin-bottom: 0;">
+                  <div class="kicker"><i class="fas fa-lightbulb"></i> Key insight</div>
+                  <p>PADP averages <strong>28.8%</strong> success vs. GenDP's 19.4% — a margin of <strong>+9.4 pts</strong>. The biggest jump is on novel object categories.</p>
+                </div>
+              </div>
+              <div class="column is-6">
+                <div style="border: 1px solid var(--rule-soft); background: #fff; padding: 1.5rem; height: 100%;">
+                  <div class="section-index" style="margin-bottom: 1rem;">
+                    <span class="num">Protocol</span>
+                    <span class="rule"></span>
                   </div>
+                  <table class="gen-table">
+                    <tbody>
+                      <tr><td class="tag-cell"><span class="tag">OS</span></td><td><strong>Object States</strong> &nbsp;<span style="color: var(--text-light); font-size: 0.85em;">pose / rotation</span></td></tr>
+                      <tr><td class="tag-cell"><span class="tag">OI</span></td><td><strong>Object Instances</strong> &nbsp;<span style="color: var(--text-light); font-size: 0.85em;">same category</span></td></tr>
+                      <tr><td class="tag-cell"><span class="tag">TP</span></td><td><strong>Task Parts</strong> &nbsp;<span style="color: var(--text-light); font-size: 0.85em;">new parts</span></td></tr>
+                      <tr><td class="tag-cell"><span class="tag is-secondary">TC</span></td><td><strong>Task Categories</strong> &nbsp;<span style="color: var(--text-light); font-size: 0.85em;">new tasks</span></td></tr>
+                      <tr><td class="tag-cell"><span class="tag is-accent">OC</span></td><td><strong>Object Categories</strong> &nbsp;<span style="color: var(--text-light); font-size: 0.85em;">unseen class</span></td></tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
@@ -714,39 +1179,26 @@
 
           <!-- Ablation Tab -->
           <div class="tab-content" id="ablation">
-            <div class="content-box">
-              <h3 class="title is-4 has-text-centered mb-5">Component Analysis</h3>
-              
-              <div class="results-grid">
-                <div class="result-card">
-                  <div class="metric">62%</div>
-                  <div class="metric-label">Full PADP Method</div>
-                </div>
-                <div class="result-card" style="opacity: 0.7;">
-                  <div class="metric">46%</div>
-                  <div class="metric-label">w/o Feature Refinement</div>
-                </div>
-                <div class="result-card" style="opacity: 0.7;">
-                  <div class="metric">39%</div>
-                  <div class="metric-label">Sonata + DP3</div>
-                </div>
-              </div>
+            <h3 class="section-title" style="font-size: clamp(1.4rem, 2.4vw, 1.8rem); margin-bottom: 1.5rem;">Component analysis.</h3>
 
-              <div class="box mt-5" style="background: linear-gradient(to right, #f0fdf4, #ffffff); border-left: 4px solid #10b981; border-radius: 6px; padding: 1.5rem; box-shadow: var(--shadow-sm);">
-                <div class="media">
-                  <div class="media-left">
-                    <span class="icon is-medium has-text-success">
-                      <i class="fas fa-check-circle fa-lg"></i>
-                    </span>
-                  </div>
-                  <div class="media-content">
-                    <h5 class="title is-6 mb-2" style="color: #065f46; font-family: 'Manrope', sans-serif;">Key Insight</h5>
-                    <p style="font-size: 1.05rem; line-height: 1.6; color: var(--text-main);">
-                      Feature refinement via contrastive learning provides the largest performance gain (<strong>+16%</strong>), confirming that our part-aware representation learning is the critical component for success.
-                    </p>
-                  </div>
-                </div>
+            <div class="results-grid">
+              <div class="result-card is-accent">
+                <div class="metric-label">Full · PADP</div>
+                <div class="metric">62<span style="font-size:0.5em; margin-left: 0.15em; color: #fbbf24;">%</span></div>
               </div>
+              <div class="result-card">
+                <div class="metric-label">w/o Feature refine</div>
+                <div class="metric" style="color: var(--text-muted);">46<span style="font-size:0.5em; margin-left: 0.15em;">%</span></div>
+              </div>
+              <div class="result-card">
+                <div class="metric-label">Sonata + DP3</div>
+                <div class="metric" style="color: var(--text-muted);">39<span style="font-size:0.5em; margin-left: 0.15em;">%</span></div>
+              </div>
+            </div>
+
+            <div class="insight" style="margin-top: 2rem;">
+              <div class="kicker"><i class="fas fa-check-circle"></i> Ablation takeaway</div>
+              <p>Feature refinement via contrastive learning provides the largest performance gain (<strong>+16 pts</strong>) — confirming that part-aware representation learning is the critical component.</p>
             </div>
           </div>
         </div>
@@ -757,14 +1209,25 @@
   <!-- Video Section -->
   <section class="section" id="videos">
     <div class="container is-max-desktop">
-      <h2 class="section-title fade-in-up">Real-World Demonstrations</h2>
-      
-      <div class="content-box fade-in-up">
-        <figure class="image mb-5">
-           <img src="./static/images/task_illustration.png" alt="Task Illustrations" style="width: 100%;">
-        </figure>
+      <div class="columns">
+        <div class="column is-3 fade-in-up">
+          <div class="section-index">
+            <span class="num">§ 06</span>
+            <span>Demos</span>
+          </div>
+        </div>
+        <div class="column is-9 fade-in-up" style="animation-delay: 0.1s;">
+          <h2 class="section-title">Eight <em>real-world</em> tasks, one policy.</h2>
 
-        <div class="video-grid">
+          <figure class="figure-plate" data-label="Fig. 05 — Task illustrations">
+            <img src="./static/images/task_illustration.png" alt="Task Illustrations">
+          </figure>
+          <div class="figure-caption" style="margin-bottom: 2.5rem;">
+            <div class="fc-label">Figure 05</div>
+            <div class="fc-body"><strong>Task illustrations.</strong> Eight articulated-object manipulation tasks spanning pulling, opening, closing, pressing, and placement.</div>
+          </div>
+
+          <div class="video-grid">
           <!-- Video 1 -->
           <div class="video-card">
             <div class="video-container">
@@ -845,44 +1308,49 @@
             <div class="video-caption">Pressing Dispenser</div>
           </div>
         </div>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- Downstream Applications Section -->
-  <section class="section" id="downstream">
+  <section class="section" id="downstream" style="background: var(--bg-surface-alt);">
     <div class="container is-max-desktop">
-      <div class="columns is-centered">
-        <div class="column fade-in-up">
-          <h2 class="section-title">Downstream Applications</h2>
-          
-          <div class="content-box">
-            <div class="columns is-multiline">
-              <div class="column is-12">
-                <figure class="image">
-                  <img src="./static/images/downstream_applications.png" alt="Downstream Applications">
-                  <figcaption class="mt-2">
-                    <strong>3D Shape Correspondences:</strong> PA3FF enables precise cross-shape correspondences using Functional Maps, robust to topology changes.
-                  </figcaption>
-                </figure>
-              </div>
-              
-              <div class="column is-6">
-                <figure class="image">
-                  <img src="./static/images/heatmap.png" alt="Semantic Heatmaps">
-                  <figcaption class="mt-2">
-                    <strong>Instruction Attention:</strong> Heatmaps show cosine similarity between text instructions and learned 3D features.
-                  </figcaption>
-                </figure>
-              </div>
+      <div class="columns">
+        <div class="column is-3 fade-in-up">
+          <div class="section-index">
+            <span class="num">§ 07</span>
+            <span>Applications</span>
+          </div>
+        </div>
+        <div class="column is-9 fade-in-up" style="animation-delay: 0.1s;">
+          <h2 class="section-title">Beyond policies — <em>correspondence</em> &amp; <em>segmentation</em>.</h2>
 
-              <div class="column is-6">
-                <figure class="image">
-                  <img src="./static/images/segmentation.png" alt="Segmentation Results">
-                  <figcaption class="mt-2">
-                    <strong>Part Segmentation:</strong> Superior zero-shot segmentation performance (mAP50 70.6%) compared to PartSlip++.
-                  </figcaption>
-                </figure>
+          <figure class="figure-plate" data-label="Fig. 06 — Correspondence">
+            <img src="./static/images/downstream_applications.png" alt="Downstream Applications">
+          </figure>
+          <div class="figure-caption" style="margin-bottom: 2.5rem;">
+            <div class="fc-label">Figure 06</div>
+            <div class="fc-body"><strong>3D Shape Correspondences.</strong> PA3FF enables precise cross-shape correspondences using Functional Maps, robust to topology changes.</div>
+          </div>
+
+          <div class="columns">
+            <div class="column is-6">
+              <figure class="figure-plate" data-label="Fig. 07 — Heatmap">
+                <img src="./static/images/heatmap.png" alt="Semantic Heatmaps">
+              </figure>
+              <div class="figure-caption">
+                <div class="fc-label">Figure 07</div>
+                <div class="fc-body"><strong>Instruction Attention.</strong> Heatmaps show cosine similarity between text instructions and learned 3D features.</div>
+              </div>
+            </div>
+            <div class="column is-6">
+              <figure class="figure-plate" data-label="Fig. 08 — Segmentation">
+                <img src="./static/images/segmentation.png" alt="Segmentation Results">
+              </figure>
+              <div class="figure-caption">
+                <div class="fc-label">Figure 08</div>
+                <div class="fc-body"><strong>Part Segmentation.</strong> Superior zero-shot segmentation performance (mAP<sub>50</sub> 70.6%) compared to PartSlip++.</div>
               </div>
             </div>
           </div>
@@ -892,19 +1360,25 @@
   </section>
 
   <!-- Footer -->
-  <footer class="footer" style="background: var(--text-main); color: white; padding: 4rem 1.5rem;">
-    <div class="container">
+  <footer class="footer">
+    <div class="container is-max-desktop">
       <div class="columns">
         <div class="column is-8">
-          <h4 class="title is-5 has-text-white">PA3FF</h4>
-          <p class="is-size-6" style="opacity: 0.7;">
+          <div class="section-index" style="color: rgba(250,248,243,0.5); margin-bottom: 1rem;">
+            <span class="num" style="color: #fbbf24;">§ end</span>
+            <span>Colophon</span>
+            <span class="rule" style="background: rgba(250,248,243,0.12);"></span>
+          </div>
+          <h4>PA<sup style="font-size: 0.5em; color: var(--primary);">3</sup>FF</h4>
+          <p style="max-width: 44ch; margin-top: 0.5rem;">
             Learning Part-Aware Dense 3D Feature Field for Generalizable Articulated Object Manipulation.
           </p>
         </div>
         <div class="column is-4 has-text-right-tablet">
-          <p class="is-size-7" style="opacity: 0.5;">
-            &copy; 2026 Anonymous Authors.<br>
-            Template adapted from <a href="https://github.com/nerfies/nerfies.github.io" style="color: white; text-decoration: underline;">NeRFies</a>.
+          <p style="font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.06em; line-height: 2;">
+            © 2026 · PA3FF Authors<br>
+            ICLR 2026<br>
+            Template adapted from <a href="https://github.com/nerfies/nerfies.github.io">NeRFies</a>.
           </p>
         </div>
       </div>
